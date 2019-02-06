@@ -1,3 +1,4 @@
+import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -9,10 +10,16 @@ class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
   static Database _database;
 
-  // Define Ingredient table and columns
-  String measurementUnitsTable = "measurementUnitsTable";
-  String colId = "id";
-  String colName = "name";
+  // Define MeasurementUnit table and columns
+  String measurementUnitsTable = 'measurementUnitsTable';
+  String unitColId = 'id';
+  String unitColName = 'name';
+  // Define Ingredient table and column
+  String ingredientsTable = 'ingredientsTable';
+  String ingredientColId = 'id';
+  String ingredientColName = 'name';
+  String ingredientUnits = 'units';
+
 
   // Named constructor to create instance of DatabaseHelper
   DatabaseHelper._createInstance();
@@ -45,14 +52,15 @@ class DatabaseHelper {
 
   // Create DB
   void _createDb(Database db, int newVersion) async {
-    await db.execute("CREATE TABLE $measurementUnitsTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT)");
+    await db.execute('CREATE TABLE $measurementUnitsTable($unitColId INTEGER PRIMARY KEY AUTOINCREMENT, $unitColName TEXT)');
   }
 
   // CRUD operations
+  // MeasurementUnit
   // Fetch
   Future<List<Map<String, dynamic>>> getMeasurementUnitMapList() async {
     Database db = await this.database;
-    var result = await db.query(measurementUnitsTable, orderBy: "$colName ASC");
+    var result = await db.query(measurementUnitsTable, orderBy: '$unitColName ASC');
     return result;
   }
   // Insert
@@ -64,23 +72,22 @@ class DatabaseHelper {
   // Update
   Future<int> updateMeasurementUnit(MeasurementUnit unit) async {
     var db = await this.database;
-    var result = await db.update(measurementUnitsTable, unit.toMap(), where: "$colId = ?", whereArgs: [unit.id]);
+    var result = await db.update(measurementUnitsTable, unit.toMap(), where: '$unitColId = ?', whereArgs: [unit.id]);
     return result;
   }
   // Delete
   Future<int> deleteMeasurementUnit(int id) async {
     var db = await this.database;
-    var result = await db.rawDelete("DELETE FROM $measurementUnitsTable WHERE $colId = $id");
+    var result = await db.rawDelete('DELETE FROM $measurementUnitsTable WHERE $unitColId = $id');
     return result;
   }
   // Number of objects in a table
-  Future<int> getCount() async {
+  Future<int> getCountMeasurementUnit() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery("SELECT COUNT (*) from $measurementUnitsTable");
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $measurementUnitsTable');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
-
   // Get "Map List" and convert to "Ingredients List"
   Future<List<MeasurementUnit>> getMeasurementUnitList() async {
     // Get Map List from DB
@@ -88,10 +95,30 @@ class DatabaseHelper {
     int count = unitMapList.length;
 
     List<MeasurementUnit> measurementUnitList = List<MeasurementUnit>();
-    for(int i=0; i<count; i++) {
+    for (int i=0; i<count; i++) {
       measurementUnitList.add(MeasurementUnit.fromMapObject(unitMapList[i]));
     }
-
     return measurementUnitList;
+  }
+
+  // Ingredient
+  // Fetch
+  Future<List<Map<String, dynamic>>> getIngredientMapList() async {
+    Database db = await this.database;
+    var result = await db.query(ingredientsTable, orderBy: '$ingredientColName ASC');
+    return result;
+  }
+
+  // Get "Map List" and convert to "Ingredients List"
+  Future<List<Ingredient>> getIngredientList() async {
+    // Get Map List from DB
+    var ingredientMapList = await getIngredientMapList();
+    int count = ingredientMapList.length;
+
+    List<Ingredient> ingredientList = List<Ingredient>();
+    for (int i=0; i<count; i++) {
+      ingredientList.add(Ingredient.fromMapObject(ingredientMapList[i]));
+    }
+    return ingredientList;
   }
 }

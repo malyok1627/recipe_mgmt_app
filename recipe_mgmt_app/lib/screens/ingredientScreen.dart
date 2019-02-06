@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/measurementUnit.dart';
 import 'package:recipe_mgmt_app/screens/newUnitScreen.dart';
+import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'dart:async';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class IngredientScreen extends StatefulWidget {
+  final Ingredient ingredient;
+
+  IngredientScreen(this.ingredient);
+
   @override
   State<StatefulWidget> createState() {
-    return IngredientScreenState();
+    return IngredientScreenState(this.ingredient);
   }
 }
 
 class IngredientScreenState extends State<IngredientScreen> {
+  Ingredient ingredient;
+
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<MeasurementUnit> measurementUnitList;
   int countMeasurementUnits = 0;
 
   // Value relevant for the Title
-  TextEditingController titleController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
+  IngredientScreenState(this.ingredient);
 
   @override
   Widget build(BuildContext context) {
     // Instance of a measurementUnitList object
-    if(measurementUnitList == null) {
+    if (measurementUnitList == null) {
       measurementUnitList = List<MeasurementUnit>();
       updateListView();
     }
@@ -39,10 +48,11 @@ class IngredientScreenState extends State<IngredientScreen> {
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextField(
-              controller: titleController,
+              controller: nameController,
               style: titleText,
               onChanged: (value) {
                 debugPrint("The value changed to: $value");
+                updateName();
               },
               decoration: InputDecoration(
                 labelText: "Name",
@@ -67,11 +77,15 @@ class IngredientScreenState extends State<IngredientScreen> {
             child: RaisedButton(
               color: Theme.of(context).primaryColorDark,
               textColor: Colors.black,
-              child: Text("Save", textScaleFactor: 1.5,),
+              child: Text("Save", textScaleFactor: 1.4,),
               elevation: 10.0,
               onPressed: () {
                 setState(() {
-                  debugPrint("Save button pressed");
+                  String name = ingredient.name;
+                  List<MeasurementUnit> unitsList = ingredient.measurementUnits;
+                  MeasurementUnit firstUnit = unitsList[1];
+                  String unitName = firstUnit.name;
+                  debugPrint("$unitsList");
                 });
               },
             ),
@@ -80,9 +94,12 @@ class IngredientScreenState extends State<IngredientScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Create new Ingredient!
           debugPrint("FAB pressed");
-          navigateToNewUnit(MeasurementUnit(""));
+          // Create new Unit
+          MeasurementUnit newUnit = MeasurementUnit("");
+          // Add it to the list of units for this Ingredient
+          ingredient.addNewMeasurementUnit(newUnit);
+          navigateToNewUnit(newUnit);
         },
         tooltip: "Add Measurement Unit",
         child: Icon(Icons.add),
@@ -132,9 +149,17 @@ class IngredientScreenState extends State<IngredientScreen> {
     );
   }
 
+  // Update name of Ingredient object
+  void updateName() {
+    ingredient.name = nameController.text;
+  }
+
   // Delete function
   void _delete(BuildContext context, MeasurementUnit unit) async {
+    // Perform delete from a DB
 		int result = await databaseHelper.deleteMeasurementUnit(unit.id);
+    // Perform delete from a list of Units for certain Ingredient
+    ingredient.deleteMeasurementUnit(unit);
 		if (result != 0) {
 			_showSnackBar(context, 'Unit Deleted Successfully');
 			updateListView();

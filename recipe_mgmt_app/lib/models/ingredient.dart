@@ -1,8 +1,9 @@
+import 'package:recipe_mgmt_app/models/measurementUnit.dart';
+
 class Ingredient {
   int _id;
   String _name;
-  List<String> _measurementUnits;
-
+  List<MeasurementUnit> _measurementUnits;
 
   // Constructors
   Ingredient(this._name, this._measurementUnits);
@@ -11,7 +12,7 @@ class Ingredient {
   // Getters
   int get id => _id;
   String get name => _name;
-  List<String> get measurementUnits => _measurementUnits;
+  List<MeasurementUnit> get measurementUnits => _measurementUnits;
 
   // Setters
   set name(String newName) {
@@ -19,23 +20,25 @@ class Ingredient {
       this._name = newName;
     }
   }
-  set measurementUnits(List<String> newMeasurementUnitsList) {
+  set measurementUnits(List<MeasurementUnit> newMeasurementUnitsList) {
     this._measurementUnits = newMeasurementUnitsList;
   }
 
   // Add new measurement unit to a list
-  addNewMeasurementUnit(String newUnit) {
-    // Get current list of units
-    List<String> temporaryList = measurementUnits;
-
+  addNewMeasurementUnit(MeasurementUnit newUnit) {
     // Add one more intsance to the list
-    temporaryList.add(newUnit);
+    measurementUnits.add(newUnit);
+  }
+  // Delete measurement unit from a list
+  deleteMeasurementUnit(MeasurementUnit unit) {
+    // Delete an instance from a list
+    measurementUnits.remove(unit);
   }
 
   // Convert a node object into a map object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    if(_id != null) {
+    if (_id != null) {
       map["id"] = _id;
     }
     map["name"] = _name;

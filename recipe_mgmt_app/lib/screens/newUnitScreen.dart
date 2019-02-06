@@ -71,7 +71,7 @@ class NewUnitScreenState extends State<NewUnitScreen> {
               child: RaisedButton(
                 color: Theme.of(context).primaryColorDark,
                 textColor: Colors.black,
-                child: Text("Save", textScaleFactor: 1.5,),
+                child: Text("Save", textScaleFactor: 1.4,),
                 onPressed: () {
                   setState(() {
                     // Validate will return true if the form is valid, or false if
