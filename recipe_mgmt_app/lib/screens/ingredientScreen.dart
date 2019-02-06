@@ -140,7 +140,7 @@ class IngredientScreenState extends State<IngredientScreen> {
 			updateListView();
 		}
   }
-  // Pop Notification
+  // Pop Notification at the bottom
   void _showSnackBar(BuildContext context, String message) {
 		final snackBar = SnackBar(content: Text(message));
 		Scaffold.of(context).showSnackBar(snackBar);
