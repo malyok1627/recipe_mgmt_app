@@ -45,6 +45,7 @@ class IngredientScreenState extends State<IngredientScreen> {
       body: Column(
         children: <Widget>[
           // Ingredient name - TextField
+          // TODO add validation form
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextField(
@@ -81,11 +82,7 @@ class IngredientScreenState extends State<IngredientScreen> {
               elevation: 10.0,
               onPressed: () {
                 setState(() {
-                  String name = ingredient.name;
-                  List<MeasurementUnit> unitsList = ingredient.measurementUnits;
-                  MeasurementUnit firstUnit = unitsList[1];
-                  String unitName = firstUnit.name;
-                  debugPrint("$unitsList");
+                  _save();
                 });
               },
             ),
@@ -138,7 +135,7 @@ class IngredientScreenState extends State<IngredientScreen> {
                   child: Icon(Icons.delete),
                   onTap: () {
                     debugPrint("Unit deleted!");
-                    _delete(context, measurementUnitList[position]);
+                    _delete(context, measurementUnitList[position], position);
                   },
                 ),
               ),
@@ -154,12 +151,27 @@ class IngredientScreenState extends State<IngredientScreen> {
     ingredient.name = nameController.text;
   }
 
+  // Save function
+  void _save() async {
+    moveToLastScreen();
+    // Only INSERT operation
+    await databaseHelper.addIngredientsTable();
+    print('Table added!');
+    int result = await databaseHelper.insertIngredient(ingredient);
+
+    if(result != 0) {  // Success
+			_showAlertDialog('Status', 'Ingredient Saved Successfully');
+		} else {  // Failure
+			_showAlertDialog('Status', 'Problem Saving Ingredient');
+		}
+  }
+
   // Delete function
-  void _delete(BuildContext context, MeasurementUnit unit) async {
+  void _delete(BuildContext context, MeasurementUnit unit, int position) async {
     // Perform delete from a DB
 		int result = await databaseHelper.deleteMeasurementUnit(unit.id);
     // Perform delete from a list of Units for certain Ingredient
-    ingredient.deleteMeasurementUnit(unit);
+    //ingredient.deleteMeasurementUnit(position);
 		if (result != 0) {
 			_showSnackBar(context, 'Unit Deleted Successfully');
 			updateListView();
@@ -170,6 +182,16 @@ class IngredientScreenState extends State<IngredientScreen> {
 		final snackBar = SnackBar(content: Text(message));
 		Scaffold.of(context).showSnackBar(snackBar);
   }
+  void _showAlertDialog(String title, String message) {
+		AlertDialog alertDialog = AlertDialog(
+			title: Text(title),
+			content: Text(message),
+		);
+		showDialog(
+				context: context,
+				builder: (_) => alertDialog,
+		);
+  } 
 
   // Update ListView
   void updateListView() {
@@ -195,5 +217,8 @@ class IngredientScreenState extends State<IngredientScreen> {
 	  	updateListView();
     }  
   } 
+  void moveToLastScreen() {
+		Navigator.pop(context, true);
+  }
 
 }
