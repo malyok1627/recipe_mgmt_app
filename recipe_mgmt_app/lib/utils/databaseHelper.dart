@@ -50,9 +50,25 @@ class DatabaseHelper {
     return cartsDatabase;
   }
 
+  void addIngredientsTable() async {
+    await _database.transaction((txn) async {
+      await txn.execute(
+        'CREATE TABLE $ingredientsTable ('
+        '$ingredientColId INTEGER PRIMARY KEY AUTOINCREMENT,'
+        '$ingredientColName TEXT,'
+        '$ingredientUnits INTEGER,'
+        'FOREIGN KEY ($ingredientUnits) REFERENCES $measurementUnitsTable ($unitColId) );'
+      );
+    });
+  }
+
   // Create DB
   void _createDb(Database db, int newVersion) async {
-    await db.execute('CREATE TABLE $measurementUnitsTable($unitColId INTEGER PRIMARY KEY AUTOINCREMENT, $unitColName TEXT)');
+    await db.execute(
+      'CREATE TABLE $measurementUnitsTable ('
+      '$unitColId INTEGER PRIMARY KEY AUTOINCREMENT,'
+      '$unitColName TEXT );'
+    );
   }
 
   // CRUD operations
@@ -60,7 +76,8 @@ class DatabaseHelper {
   // Fetch
   Future<List<Map<String, dynamic>>> getMeasurementUnitMapList() async {
     Database db = await this.database;
-    var result = await db.query(measurementUnitsTable, orderBy: '$unitColName ASC');
+    var result = await db.query(measurementUnitsTable); 
+    //var result = await db.query(measurementUnitsTable, orderBy: '$unitColName ASC');
     return result;
   }
   // Insert
@@ -106,6 +123,12 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getIngredientMapList() async {
     Database db = await this.database;
     var result = await db.query(ingredientsTable, orderBy: '$ingredientColName ASC');
+    return result;
+  }
+  // Insert
+  Future<int> insertIngredient(Ingredient ingredient) async {
+    Database db = await this.database;
+    var result = await db.insert(ingredientsTable, ingredient.toMap());
     return result;
   }
 
