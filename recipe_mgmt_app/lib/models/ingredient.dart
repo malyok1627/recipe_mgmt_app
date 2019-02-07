@@ -27,12 +27,39 @@ class Ingredient {
   // Add new measurement unit to a list
   addNewMeasurementUnit(MeasurementUnit newUnit) {
     // Add one more intsance to the list
+    // for (int i=0; i<measurementUnits.length; i++) {
+    //   MeasurementUnit obj = measurementUnits[i];
+    //   String name = obj.name;
+    //   int id = obj.id;
+    //   print("name: $name, id: $id");
+    // }
     measurementUnits.add(newUnit);
+    // print("after insertion");
+    // for (int i=0; i<measurementUnits.length; i++) {
+    //   MeasurementUnit obj = measurementUnits[i];
+    //   String name = obj.name;
+    //   int id = obj.id;
+    //   print("name: $name, id: $id");
+    // }
   }
   // Delete measurement unit from a list
-  deleteMeasurementUnit(MeasurementUnit unit) {
+  deleteMeasurementUnit(int position) {
     // Delete an instance from a list
-    measurementUnits.remove(unit);
+    // for (int i=0; i<measurementUnits.length; i++) {
+    //   MeasurementUnit obj = measurementUnits[i];
+    //   String name = obj.name;
+    //   int id = obj.id;
+    //   print("name: $name, id: $id");
+    // }
+    measurementUnits.removeAt(position);
+    // print("after deletion");
+    // for (int i=0; i<measurementUnits.length; i++) {
+    //   MeasurementUnit obj = measurementUnits[i];
+    //   String name = obj.name;
+    //   int id = obj.id;
+    //   print("name: $name, id: $id");
+    // }
+
   }
 
   // Convert a node object into a map object
