@@ -1,10 +1,11 @@
-class MeasurementUnit {
+
+class Cart {
   int _id;
   String _name;
 
   // Constructors
-  MeasurementUnit(this._name);
-  MeasurementUnit.withId(this._id, this._name);
+  Cart(this._name);
+  Cart.withId(this._id, this._name);
 
   // Getters
   int get id => _id;
@@ -12,25 +13,25 @@ class MeasurementUnit {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 20) {
+    if (newName.length <= 25) {
       this._name = newName;
     }
   }
 
-  // Convert a Node object into a Map object
+  // Convert a node object into a map object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     if (_id != null) {
-      map["unitId"] = _id;
+      map["cartId"] = _id;
     }
-    map["unitName"] = _name;
+    map["cartName"] = _name;
 
     return map;
   }
 
   // Extract a node object from a map object
-  MeasurementUnit.fromMapObject(Map<String, dynamic> map) {
-    this._id = map["unitId"];
-    this._name = map["unitName"];
+  Cart.fromMapObject(Map<String, dynamic> map) {
+    this._id = map["cartId"];
+    this._name = map["cartName"];
   }
 }
