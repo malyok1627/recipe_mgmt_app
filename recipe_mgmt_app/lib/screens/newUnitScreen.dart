@@ -101,13 +101,13 @@ class NewUnitScreenState extends State<NewUnitScreen> {
 	void _save() async {
     moveToLastScreen();
     // Only INSERT operation
-    int result = await databaseHelper.insertMeasurementUnit(unit);
+    // int result = await databaseHelper.insertMeasurementUnit(unit);
 
-    if(result != 0) {  // Success
-			_showAlertDialog('Status', 'Unit Saved Successfully');
-		} else {  // Failure
-			_showAlertDialog('Status', 'Problem Saving Unit');
-		}
+    // if(result != 0) {  // Success
+		// 	_showAlertDialog('Status', 'Unit Saved Successfully');
+		// } else {  // Failure
+		// 	_showAlertDialog('Status', 'Problem Saving Unit');
+		// }
   }
 
   void _showAlertDialog(String title, String message) {
