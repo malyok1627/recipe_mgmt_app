@@ -12,11 +12,13 @@ class RecipeScreen extends StatefulWidget {
   }
 }
 
-class RecipeScreenState extends State<RecipeScreen> {  
-
+class RecipeScreenState extends State<RecipeScreen> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Ingredient> ingredientList;
   int countIngredients = 0;
+
+  // Value relevant for the Title
+  TextEditingController amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class RecipeScreenState extends State<RecipeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Create new Ingredient!
-          Ingredient newIngredient = Ingredient("", List<MeasurementUnit>());
+          Ingredient newIngredient = Ingredient('', null);
           // Add it to the list of ingredients for this recipe!
           // TODO
           // recipe.addNewIngredient(newIngredient);
@@ -69,103 +71,144 @@ class RecipeScreenState extends State<RecipeScreen> {
   ListView getIngredientListView() {
     TextStyle titleText = Theme.of(context).textTheme.title;
 
-    // Values relevat for the input
-    TextEditingController amountController = TextEditingController();
-
-    // Variable used in drop down menu. Here measuring units of an
-    // ingredient should appear
-    List _measuringUnits = ["g", "each"];
-
     return ListView.builder(
       itemCount: countIngredients,
       itemBuilder: (BuildContext context, int position) {
         return Card(
           color: Colors.white,
-          elevation: 2.0,
+          elevation: 10.0,
+          margin:
+              EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
           child: Row(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  // Upper part of a card - Ingredient name
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                    child: Text(
-                      "Ingredient name",
-                      style: titleText,
-                    ),
-                  ),
+              // Text
+              Padding(
+                padding: EdgeInsets.only(left: 20.0),
+                child: Text(
+                  this.ingredientList[position].name,
+                  style: titleText,
+                ),
+              ),
 
-                  // Lower part of a card - TextField, DropDown, Icon
-                  Row(
-                    children: <Widget>[
-                      // TextField
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(
-                          controller: amountController,
-                          style: titleText,
-                          onChanged: (value) {
-                            debugPrint("The value changed to: $value");
-                          },
-                        ),
-                      ),
-
-                      // DropDown Menu
-                      ListTile(
-                        title: DropdownButton(
-                          items: _measuringUnits,
-                          style: titleText,
-                          onChanged: (chosenValue) {
-                            setState(() {
-                              debugPrint("User selected $chosenValue");
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+              TextFormField(
+                controller: amountController,
+                style: titleText,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Please enter some text";
+                  } else {
+                    //updateName();
+                    print('$value');
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: "Amount",
+                  labelStyle: titleText,
+                  contentPadding:
+                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                ],
+                ),
               ),
 
               // Delete Icon
               Padding(
-                padding: EdgeInsets.all(10.0),
+                padding: EdgeInsets.only(left: 20.0, top: 5.0, bottom: 5.0),
                 child: GestureDetector(
                   child: Icon(Icons.delete),
                   onTap: () {
-                    debugPrint("Ingredient deleted!");
+                    debugPrint("Unit deleted!");
+                    //_delete(context, measurementUnitList[position], position);
                   },
                 ),
               ),
             ],
-          ));
+          ),
+        );
       },
     );
-  }
 
+    // return ListView.builder(
+    //   itemCount: countIngredients,
+    //   itemBuilder: (BuildContext context, int position) {
+    //     return Card(
+    //         color: Colors.white,
+    //         elevation: 2.0,
+    //         child: Row(
+    //           children: <Widget>[
+    //             Column(
+    //               children: <Widget>[
+    //                 // Upper part of a card - Ingredient name
+    //                 Padding(
+    //                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
+    //                   child: Text(
+    //                     "Ingredient name",
+    //                     style: titleText,
+    //                   ),
+    //                 ),
+
+    //                 // Lower part of a card - TextField, DropDown, Icon
+    //                 Row(
+    //                   children: <Widget>[
+    //                     // TextField
+    //                     Padding(
+    //                       padding: EdgeInsets.all(10.0),
+    //                       child: TextField(
+    //                         controller: amountController,
+    //                         style: titleText,
+    //                         onChanged: (value) {
+    //                           debugPrint("The value changed to: $value");
+    //                         },
+    //                       ),
+    //                     ),
+
+    //                     // DropDown Menu
+    //                     // ListTile(
+    //                     //   title: DropdownButton(
+    //                     //     items: _measuringUnits,
+    //                     //     style: titleText,
+    //                     //     onChanged: (chosenValue) {
+    //                     //       setState(() {
+    //                     //         debugPrint("User selected $chosenValue");
+    //                     //       });
+    //                     //     },
+    //                     //   ),
+    //                     // ),
+    //                   ],
+    //                 ),
+    //               ],
+    //             ),
+    //           ],
+    //         ));
+    //   },
+    // );
+  }
 
   // Navigation function
   void navigateToNewUnit(Ingredient ingredient) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-		  return IngredientScreen(ingredient);
-	  }));
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return IngredientScreen(ingredient);
+    }));
 
-	  if(result == true) {
-	  	updateListView();
-    }  
-  } 
+    if (result == true) {
+      updateListView();
+    }
+  }
 
   // Update ListView
   void updateListView() {
-		final Future<Database> dbFuture = databaseHelper.initalizeDatabase();
-		dbFuture.then((database) {
-			Future<List<Ingredient>> ingredientListFuture = databaseHelper.getIngredientList();
-			ingredientListFuture.then((measurementUnitList) {
-				setState(() {
-				  this.ingredientList = ingredientList;
-				  this.countIngredients = ingredientList.length;
-				});
-			});
-		});
+    final Future<Database> dbFuture = databaseHelper.initalizeDatabase();
+    dbFuture.then((database) {
+      Future<List<Ingredient>> ingredientListFuture =
+          databaseHelper.getIngredientList();
+      ingredientListFuture.then((ingredientList) {
+        setState(() {
+          this.ingredientList = ingredientList;
+          this.countIngredients = ingredientList.length;
+        });
+      });
+    });
   }
 }
