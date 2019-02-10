@@ -50,47 +50,55 @@ class DatabaseHelper {
   // Getter
   Future<Database> get database async {
     if(_database == null) {
-      _database = await initializeDatabase();
+      _database = await initializeDatabase();      
     }
-    return _database;
+    return _database;    
   }
 
   Future<Database> initializeDatabase() async {
     // Get directory path from both iOS and Android
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + "/carts.db";
+    String path = directory.path + "/carts2.db";
     print('$path');
 
-    // Open/create a db at a give path
+    // Open/create a db at a given path
     var cartsDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return cartsDatabase;
   }
 
   // Create DB
   void _createDb(Database db, int newVersion) async {
-    await db.execute(
-      // CREATE Table for Ingredients
+    // CREATE Table for Ingredients
+    await db.execute(      
       'CREATE TABLE $ingredientsTable ('
         '$ingredientColId INTEGER PRIMARY KEY AUTOINCREMENT,'
         '$ingredientColName TEXT,'
         '$ingredientColUnit TEXT);'
-      // CREATE Table for Recipies
+    );
+    // CREATE Table for Recipies
+    await db.execute(      
       'CREATE TABLE $recipesTable ('
         '$recipeColId INTEGER PRIMARY KEY AUTOINCREMENT,'
         '$recipeColName TEXT,'
         '$recipeColCategory TEXT);'
-      // CREATE Table for Carts
+    );
+    // CREATE Table for Carts
+    await db.execute(
       'CREATE TABLE $cartsTable ('
         '$cartColId INTEGER PRIMARY KEY AUTOINCREMENT,'
         '$cartColName TEXT);'
+    );
       // CREATE BRIDGE Table for Recipies&Ingredients
+    await db.execute(
       'CREATE TABLE $brTableRecipeIngredient ('
         '$brTableRIColRecId INTEGER,'
         '$brTableRIColIngId INTEGER,'
         '$brTableRIColAmount REAL,'
         'FOREIGN KEY ($brTableRIColRecId) REFERENCES $recipesTable ($brTableRIColRecId) ON DELETE CASCADE,'
         'FOREIGN KEY ($brTableRIColIngId) REFERENCES $ingredientsTable ($brTableRIColIngId) ON DELETE CASCADE);'
+    );
       // CREATE BRIDGE Table for Carts&Recipies
+    await db.execute(
       'CREATE TABLE $brTableCartRecipe ('
         '$brTableCRColCartId INTEGER,'
         '$brTableCRColRecId INTEGER,'
@@ -127,7 +135,7 @@ class DatabaseHelper {
   }
 
   // Number of objects in a table
-  Future<int> getCountIngredients() async {
+  Future<int> getCountIngredient() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $ingredientsTable');
     int result = Sqflite.firstIntValue(x);
@@ -135,7 +143,7 @@ class DatabaseHelper {
   }
 
   // Get "Map List" and convert to "Ingredients List"
-  Future<List<Ingredient>> getIngredientsList() async {
+  Future<List<Ingredient>> getIngredientList() async {
     // Get Map List from DB
     var ingredientMapList = await getIngredientMapList();
     int count = ingredientMapList.length;
@@ -157,13 +165,13 @@ class DatabaseHelper {
   // Insert
   Future<int> insertRecipe(Recipe recipe) async {
     Database db = await this.database;
-    var result = await db.insert(ingredientsTable, recipe.toMap());
+    var result = await db.insert(recipesTable, recipe.toMap());
     return result;
   }
   // Update
   Future<int> updateRecipe(Recipe recipe) async {
     var db = await this.database;
-    var result = await db.update(ingredientsTable, recipe.toMap(), where: '$recipeColId = ?', whereArgs: [recipe.id]);
+    var result = await db.update(recipesTable, recipe.toMap(), where: '$recipeColId = ?', whereArgs: [recipe.id]);
     return result;
   }
   // Delete
@@ -174,7 +182,7 @@ class DatabaseHelper {
   }
 
   // Number of objects in a table
-  Future<int> getCountRecipies() async {
+  Future<int> getCountRecipe() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $recipesTable');
     int result = Sqflite.firstIntValue(x);
@@ -182,7 +190,7 @@ class DatabaseHelper {
   }
 
   // Get "Map List" and convert to "Recipes List"
-  Future<List<Recipe>> getRecipesList() async {
+  Future<List<Recipe>> getRecipeList() async {
     // Get Map List from DB
     var recipeMapList = await getRecipeMapList();
     int count = recipeMapList.length;
@@ -204,13 +212,13 @@ class DatabaseHelper {
   // Insert
   Future<int> insertCart(Cart cart) async {
     Database db = await this.database;
-    var result = await db.insert(ingredientsTable, cart.toMap());
+    var result = await db.insert(cartsTable, cart.toMap());
     return result;
   }
   // Update
   Future<int> updateCart(Cart cart) async {
     var db = await this.database;
-    var result = await db.update(ingredientsTable, cart.toMap(), where: '$cartColId = ?', whereArgs: [cart.id]);
+    var result = await db.update(cartsTable, cart.toMap(), where: '$cartColId = ?', whereArgs: [cart.id]);
     return result;
   }
   // Delete
@@ -221,7 +229,7 @@ class DatabaseHelper {
   }
 
   // Number of objects in a table
-  Future<int> getCountCarts() async {
+  Future<int> getCountCart() async {
     Database db = await this.database;
     List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $cartsTable');
     int result = Sqflite.firstIntValue(x);
@@ -229,9 +237,9 @@ class DatabaseHelper {
   }
 
   // Get "Map List" and convert to "Carts List"
-  Future<List<Cart>> getCartsList() async {
+  Future<List<Cart>> getCartList() async {
     // Get Map List from DB
-    var cartMapList = await getRecipeMapList();
+    var cartMapList = await getCartMapList();
     int count = cartMapList.length;
 
     List<Cart> cartList = List<Cart>();
@@ -277,7 +285,7 @@ class DatabaseHelper {
     return result;
   }
   // Get "Map List" and convert to "Ingredients List"
-  Future<List<Ingredient>> getIngredientsInRecipeList(int recipeId) async {
+  Future<List<Ingredient>> getIngredientInRecipeList(int recipeId) async {
     // Get Map List from DB
     var ingredientMapList = await getRecipeIngredientList(recipeId);
     int count = ingredientMapList.length;
@@ -317,7 +325,7 @@ class DatabaseHelper {
     return result;
   }
   // Get "Map List" and convert to "Recipe List"
-  Future<List<Recipe>> getRecipesInCartList(int cartId) async {
+  Future<List<Recipe>> getRecipeInCartList(int cartId) async {
     // Get Map List from DB
     var recipeMapList = await getCartRecipeList(cartId);
     int count = recipeMapList.length;
