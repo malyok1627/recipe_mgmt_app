@@ -199,10 +199,10 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Update ListView
   void updateListView() {
-    final Future<Database> dbFuture = databaseHelper.initalizeDatabase();
+    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
       Future<List<Ingredient>> ingredientListFuture =
-          databaseHelper.getIngredientList();
+        databaseHelper.getIngredientList();
       ingredientListFuture.then((ingredientList) {
         setState(() {
           this.ingredientList = ingredientList;
