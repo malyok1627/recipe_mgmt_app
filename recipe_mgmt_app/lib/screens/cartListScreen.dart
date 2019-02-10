@@ -48,7 +48,7 @@ class CartListScreenState extends State<CartListScreen> {
 			itemBuilder: (BuildContext context, int position) {
 				return Card(
 					color: Colors.white,
-					elevation: 2.0,
+					elevation: 4.0,
 					child: ListTile(
 						title: Text(this.cartList[position].name, style: titleStyle,),
 						trailing: GestureDetector(
@@ -58,7 +58,6 @@ class CartListScreenState extends State<CartListScreen> {
 							},
 						),
         		onTap: () {
-							debugPrint('ListTile Tapped');
 							navigateToCart(this.cartList[position], 'Edit Cart');
 						},
 

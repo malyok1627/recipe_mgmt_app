@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/cart.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
-import 'package:sqflite/sqflite.dart';
 
 class NewCartScreen extends StatefulWidget {
   final String appBarTitle;
@@ -52,7 +51,6 @@ class NewCartScreenState extends State<NewCartScreen> {
                     return "Please enter some text";
                   } else {
                     updateName();
-                    print('$value');
                   }
                 },
                 decoration: InputDecoration(
