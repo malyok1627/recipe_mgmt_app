@@ -11,7 +11,7 @@ class Recipe {
   // Getters
   int get id => _id;
   String get name => _name;
-  String get unitName => _category;
+  String get category => _category;
 
   // Setters
   set name(String newName) {
@@ -19,7 +19,7 @@ class Recipe {
       this._name = newName;
     }
   }
-  set unitName(String newCategory) {
+  set category(String newCategory) {
     this._category = newCategory;
   }
 
