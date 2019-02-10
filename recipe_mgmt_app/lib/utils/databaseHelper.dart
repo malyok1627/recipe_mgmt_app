@@ -50,12 +50,12 @@ class DatabaseHelper {
   // Getter
   Future<Database> get database async {
     if(_database == null) {
-      _database = await initalizeDatabase();
+      _database = await initializeDatabase();
     }
     return _database;
   }
 
-  Future<Database> initalizeDatabase() async {
+  Future<Database> initializeDatabase() async {
     // Get directory path from both iOS and Android
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path + "/carts.db";
@@ -316,7 +316,7 @@ class DatabaseHelper {
       'WHERE $brTableCRColCartId = $cartId AND $brTableCRColRecId = $recipeId');
     return result;
   }
-  // Get "Map List" and convert to "Ingredients List"
+  // Get "Map List" and convert to "Recipe List"
   Future<List<Recipe>> getRecipesInCartList(int cartId) async {
     // Get Map List from DB
     var recipeMapList = await getCartRecipeList(cartId);
