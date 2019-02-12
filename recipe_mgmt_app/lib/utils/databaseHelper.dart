@@ -297,7 +297,7 @@ class DatabaseHelper {
     return ingredientList;
   }
 
-  // CRD operations for recipeIngredientBrTable
+  // CRD operations for cartRecipeBrTable
   // Fetch
   Future<List<Map<String, dynamic>>> getCartRecipeList(int cartId) async {
     Database db = await this.database;

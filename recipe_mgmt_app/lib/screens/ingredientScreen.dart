@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/measurementUnit.dart';
-import 'package:recipe_mgmt_app/screens/newUnitScreen.dart';
 import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'dart:async';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
@@ -77,7 +76,7 @@ class IngredientScreenState extends State<IngredientScreen> {
               ),
             ),
 
-            // List of available units - Cards
+            // List of available units - Cardsd
             //Expanded(
             //  child: getIngredientListView(),
             //),

@@ -52,7 +52,7 @@ class CartListScreenState extends State<CartListScreen> {
 					child: ListTile(
 						title: Text(this.cartList[position].name, style: titleStyle,),
 						trailing: GestureDetector(
-							child: Icon(Icons.delete, color: Colors.grey,),
+							child: Icon(Icons.delete, color: Colors.black,),
 							onTap: () {
 								_delete(context, cartList[position]);
 							},
