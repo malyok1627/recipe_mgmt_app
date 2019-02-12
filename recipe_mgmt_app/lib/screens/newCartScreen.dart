@@ -35,6 +35,19 @@ class NewCartScreenState extends State<NewCartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(appBarTitle),
+        actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.save),
+              tooltip: 'Save New Cart',
+              onPressed: () {
+                setState(() {
+                  if (_formKey.currentState.validate()) {
+                    _save();
+                  }
+                });
+              },
+            ),
+          ],
       ),
       body: Form(
         key: _formKey,
@@ -64,27 +77,6 @@ class NewCartScreenState extends State<NewCartScreen> {
                 ),
               ),
             ),
-
-            // Save button
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).primaryColorDark,
-                textColor: Colors.black,
-                child: Text(
-                  "Save",
-                  textScaleFactor: 1.4,
-                ),
-                elevation: 10.0,
-                onPressed: () {
-                  setState(() {
-                    if (_formKey.currentState.validate()) {
-                      _save();
-                    }
-                  });
-                },
-              ),
-            )
           ],
         ),
       ),
