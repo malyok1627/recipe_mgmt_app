@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 
@@ -16,7 +17,13 @@ class NewRecipeScreen extends StatefulWidget {
 
 class NewRecipeScreenState extends State<NewRecipeScreen> {
   // Possible categories for recipe
-  static var _categories = ['dessert', 'salad', 'soup', 'main dish', 'breakfast'];
+  static var _categories = [
+    'dessert',
+    'salad',
+    'soup',
+    'main dish',
+    'breakfast'
+  ];
 
   String appBarTitle;
   Recipe recipe;
@@ -28,7 +35,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
   // Initialize DB helper
   DatabaseHelper dbHelper = DatabaseHelper();
 
-  NewRecipeScreenState(this.recipe, this.appBarTitle); 
+  NewRecipeScreenState(this.recipe, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +45,19 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(appBarTitle),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Save Cart',
+            onPressed: () {
+              setState(() {
+                if (_formKey.currentState.validate()) {
+                  _save();
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -45,7 +65,8 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
           children: <Widget>[
             // Recipe name - TextField
             Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
@@ -69,45 +90,24 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
             ),
 
             // Category drop down menu
-            // Padding(
-            //   padding: EdgeInsets.all(10.0),
-            //   child: DropdownButton(
-            //     items: _categories.map((String dropDownStringItem) {
-            //       return DropdownMenuItem<String>(
-            //         value: dropDownStringItem,
-            //         child: Text(dropDownStringItem),
-            //       );
-            //     }).toList(),
-            //     style: titleText,
-            //     value: recipe.category,
-            //     onChanged: (value) {
-            //       setState(() {
-            //         recipe.category = value;
-            //       });
-            //     },
-            //   ),
-            // ),
-
-            // Save button
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).primaryColorDark,
-                textColor: Colors.black,
-                child: Text(
-                  "Save",
-                  textScaleFactor: 1.4,
-                ),
-                elevation: 10.0,
-                onPressed: () {
+              child: DropdownButton(
+                items: _categories.map((String dropDownStringItem) {
+                  return DropdownMenuItem<String>(
+                    value: dropDownStringItem,
+                    child: Text(dropDownStringItem),
+                  );
+                }).toList(),
+                style: titleText,
+                value: recipe.category,
+                onChanged: (value) {
                   setState(() {
-                    if (_formKey.currentState.validate()) {
-                      _save();
-                    }
+                    recipe.category = value;
                   });
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -140,14 +140,10 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
 
   // Show alert dialog
   void _showAlertDialog(String title, String message) {
-		AlertDialog alertDialog = AlertDialog(
-			title: Text(title),
-			content: Text(message),
-		);
-		showDialog(
-				context: context,
-				builder: (_) => alertDialog
-		);
-}
-
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
+  }
 }
