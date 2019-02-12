@@ -30,7 +30,7 @@ class Ingredient {
       map["ingredientId"] = _id;
     }
     map["ingredientName"] = _name;
-    map["unitName"] = _unitName;
+    map["ingredientUnit"] = _unitName;
 
     return map;
   }
@@ -39,6 +39,6 @@ class Ingredient {
   Ingredient.fromMapObject(Map<String, dynamic> map) {
     this._id = map["ingredientId"];
     this._name = map["ingredientName"];
-    this._unitName = map["unitName"];
+    this._unitName = map["ingredientUnit"];
   }
 }
