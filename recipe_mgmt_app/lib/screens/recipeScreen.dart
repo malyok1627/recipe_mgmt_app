@@ -28,10 +28,13 @@ class RecipeScreenState extends State<RecipeScreen> {
   List<Ingredient> ingredientList;
   List<bool> numOfCheckboxes = List<bool>();
   int countIngredients = 0;
-  double amount;
+  List<double> amountList = List<double>();
+  // Used for text validation
+  final _formKey = GlobalKey<FormState>();
 
   // Value relevant for the Title
-  TextEditingController amountController = TextEditingController();
+  //TextEditingController amountController = TextEditingController();
+  List<TextEditingController> _amountControllers = new List();
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +50,16 @@ class RecipeScreenState extends State<RecipeScreen> {
             icon: const Icon(Icons.save),
             tooltip: 'Save Cart',
             onPressed: () {
-              addIngredientsToCart();
-              moveToLastScreen();
+              //setState(() {
+                //if (_formKey.currentState.validate()) {
+                  for (int i=0; i<amountList.length; i++) {
+                    print(amountList[i]);
+                  } 
+                //}
+              //});
+                           
+              //addIngredientsToCart();
+              //moveToLastScreen();
             },
           ),
         ],
@@ -104,9 +115,12 @@ class RecipeScreenState extends State<RecipeScreen> {
     }
   }
 
-  // Update name of Cart object
-  void updateName() {
-    amount = double.tryParse(amountController.text);
+  // Update amount of ingredient
+  void updateAmount(int position) {
+    // TODO how to save values to amountList? 
+    setState(() {
+      amountList.add(double.parse(_amountControllers[position].text));
+    });
   }
 
   void addIngredientsToCart() {
@@ -114,10 +128,7 @@ class RecipeScreenState extends State<RecipeScreen> {
     for (int i = 0; i < numOfCheckboxes.length; i++) {
       bool tempVal = numOfCheckboxes[i];
       if (tempVal == true) {
-        dbHelper.insertIngredientToRecipe(
-            recipe.id, ingredientList[i].id, amount);
-        String ingredientName = ingredientList[i].name;
-        print(ingredientName);
+        dbHelper.insertIngredientToRecipe(recipe.id, ingredientList[i].id, amountList[i]);        
       }
     }
   }
@@ -126,8 +137,7 @@ class RecipeScreenState extends State<RecipeScreen> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Ingredient>> ingredientListFuture =
-          dbHelper.getIngredientList();
+      Future<List<Ingredient>> ingredientListFuture = dbHelper.getIngredientList();
       ingredientListFuture.then((ingredientList) {
         List<int> ingredientsId = List<int>(ingredientList.length);
 
@@ -173,6 +183,9 @@ class RecipeScreenState extends State<RecipeScreen> {
     return ListView.builder(
       itemCount: countIngredients,
       itemBuilder: (BuildContext context, int position) {
+        // Add an amountController
+        _amountControllers.add(new TextEditingController());
+
         return Card(
           color: Colors.white,
           elevation: 4.0,
@@ -205,19 +218,22 @@ class RecipeScreenState extends State<RecipeScreen> {
                       padding: EdgeInsets.all(2.0),
                       child: Container(
                         height: 55.0,
-                        width: 200.0,
-                        child: TextFormField(
-                          controller: amountController,
+                        width: 210.0,
+                        child: TextField(
+                          controller: _amountControllers[position],
                           style: titleStyle,
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter some text";
-                            } else {
-                              updateName();
-                            }
+                          onChanged: (value) {
+                            updateAmount(position);
                           },
+                          // validator: (value) {
+                          //   if (value.isEmpty) {
+                          //     return "Please enter some text";
+                          //   } else {
+                          //     updateName(position);
+                          //   }
+                          // },
                           decoration: InputDecoration(
-                            labelText: "Ingredient amount",
+                            labelText: "ingredient amount",
                             labelStyle: titleStyle,
                             contentPadding: EdgeInsets.only(
                                 left: 20, bottom: 15.0, top: 15.0),
@@ -231,9 +247,18 @@ class RecipeScreenState extends State<RecipeScreen> {
                   ],
                 ),
 
+                // Ingredient unit
+                Container(
+                  height: 5.0,
+                  width: 20.0,
+                  margin: EdgeInsets.only(left: 10.0),
+                  child: Text(ingredientList[position].unitName),
+                ),
+
                 // Delete Button
-                Align(
-                  alignment: Alignment.centerRight,
+                Container(
+                  height: 20.0,
+                  width: 20.0,
                   child: FlatButton(
                     child: Icon(Icons.delete),
                     onPressed: () {
