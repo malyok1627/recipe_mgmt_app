@@ -71,7 +71,8 @@ class CartScreenState extends State<CartScreen> {
                 ),
                 elevation: 10.0,
                 onPressed: () {
-                  // TODO add new screen - list of groceries                  
+                  // TODO add new screen - list of groceries
+                  getShoppingList();                  
                 },
               ),
             )
@@ -100,6 +101,7 @@ class CartScreenState extends State<CartScreen> {
             padding: EdgeInsets.all(4.0),
             child: Row(
               children: <Widget>[
+                // Checkbox
                 Padding(
                   padding: EdgeInsets.all(1.0),
                   child: Checkbox(
@@ -109,25 +111,37 @@ class CartScreenState extends State<CartScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: FlatButton(
+                // Recipe name
+                Container(
+                  width: 100.0,
+                  child: Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: FlatButton(
+                      child: Text(
+                        recipeList[position].name,
+                        style: titleStyle,
+                      ),
+                      onPressed: () {
+                        navigateToRecipe(this.recipeList[position], 'Edit Recipe');
+                      },
+                    ),
+                  ),
+                ),
+                
+                // Recipe category
+                // TODO check if the category is chosen!
+                Container(
+                  width: 100.0,
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
                     child: Text(
-                      recipeList[position].name,
+                      recipeList[position].category,
                       style: titleStyle,
                     ),
-                    onPressed: () {
-                      navigateToRecipe(this.recipeList[position], 'Edit Recipe');
-                    },
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text(
-                    recipeList[position].category,
-                    style: titleStyle,
-                  ),
-                ),
+                
+                // Delete button
                 Align(
                   alignment: Alignment.centerRight,
                   child: FlatButton(
@@ -188,6 +202,17 @@ class CartScreenState extends State<CartScreen> {
     });
   }
 
+  // Display grocery list
+  void getShoppingList() {
+    // Get all recipes in cart
+
+    // Get all ingredients in recipe
+
+    // Sum up all ingredients
+
+    // Display in another screen
+  }
+
   // Monitor checkbox changes
   void boxStateChange(bool value, int position) {
     setState(() {
@@ -217,8 +242,6 @@ class CartScreenState extends State<CartScreen> {
       bool tempVal = numOfCheckboxes[i];
       if (tempVal == true) {
         dbHelper.insertRecipeToCart(cart.id, recipeList[i].id);
-        String recipeName = recipeList[i].name;
-        print(recipeName);
       }
     }
   }
@@ -236,8 +259,9 @@ class CartScreenState extends State<CartScreen> {
 
   // Delete Recipe from table
   void _delete(BuildContext context, Recipe recipe) async {
-    int result = await dbHelper.deleteRecipe(recipe.id);
-    if (result != 0) {
+    int result1 = await dbHelper.deleteRecipe(recipe.id);
+    int result2 = await dbHelper.deleteRecipeFromCart(cart.id, recipe.id);
+    if (result1 != 0 && result2 != 0) {
       _showSnackBar(context, 'Recipe Deleted Successfully');
       updateListView();
     }
