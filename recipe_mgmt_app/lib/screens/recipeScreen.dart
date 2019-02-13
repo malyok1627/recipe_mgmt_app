@@ -28,7 +28,7 @@ class RecipeScreenState extends State<RecipeScreen> {
   List<Ingredient> ingredientList;
   List<bool> numOfCheckboxes = List<bool>();
   int countIngredients = 0;
-  List<double> amountList = List<double>();
+  List<double> amountList;
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
 
@@ -52,14 +52,14 @@ class RecipeScreenState extends State<RecipeScreen> {
             onPressed: () {
               //setState(() {
                 //if (_formKey.currentState.validate()) {
-                  for (int i=0; i<amountList.length; i++) {
-                    print(amountList[i]);
-                  } 
+                  // for (int i=0; i<amountList.length; i++) {
+                  //   print(amountList[i]);
+                  // } 
                 //}
               //});
-                           
-              //addIngredientsToCart();
-              //moveToLastScreen();
+     
+              addIngredientsToCart();
+              moveToLastScreen();
             },
           ),
         ],
@@ -85,8 +85,9 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Delete Recipe from table
   void _delete(BuildContext context, Ingredient ingredient) async {
-    int result = await dbHelper.deleteIngredient(ingredient.id);
-    if (result != 0) {
+    int result1 = await dbHelper.deleteIngredient(ingredient.id);
+    int result2 = await dbHelper.deleteIngredientFromRecipe(recipe.id, ingredient.id);
+    if (result1 != 0 && result2 != 0) {
       _showSnackBar(context, 'Ingredient Deleted Successfully');
       updateListView();
     }
@@ -117,9 +118,8 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Update amount of ingredient
   void updateAmount(int position) {
-    // TODO how to save values to amountList? 
     setState(() {
-      amountList.add(double.parse(_amountControllers[position].text));
+      amountList[position] = double.parse(_amountControllers[position].text);
     });
   }
 
@@ -142,8 +142,7 @@ class RecipeScreenState extends State<RecipeScreen> {
         List<int> ingredientsId = List<int>(ingredientList.length);
 
         // Get recipes in this cart
-        Future<List<Ingredient>> ingredientsInCartListFuture =
-            dbHelper.getIngredientInRecipeList(recipe.id);
+        Future<List<Ingredient>> ingredientsInCartListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
         ingredientsInCartListFuture.then((ingredientsInCartList) {
           for (int i = 0; i < ingredientsInCartList.length; i++) {
             ingredientsId[ingredientsInCartList[i].id - 1] =
@@ -170,6 +169,7 @@ class RecipeScreenState extends State<RecipeScreen> {
           setState(() {
             this.ingredientList = ingredientList;
             this.countIngredients = ingredientList.length;
+            this.amountList = List<double>(countIngredients);
           });
         });
       });
@@ -218,7 +218,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                       padding: EdgeInsets.all(2.0),
                       child: Container(
                         height: 55.0,
-                        width: 210.0,
+                        width: 230.0,
                         child: TextField(
                           controller: _amountControllers[position],
                           style: titleStyle,
@@ -258,13 +258,13 @@ class RecipeScreenState extends State<RecipeScreen> {
                 // Delete Button
                 Container(
                   height: 20.0,
-                  width: 20.0,
-                  child: FlatButton(
+                  width: 30.0,
+                  child: GestureDetector(
                     child: Icon(Icons.delete),
-                    onPressed: () {
+                    onTap: () {
                       _delete(context, ingredientList[position]);
                     },
-                  ),
+                  ),                  
                 )
               ],
             ),
