@@ -320,7 +320,7 @@ class DatabaseHelper {
   // Delete
   Future<int> deleteRecipeFromCart(int cartId, int recipeId) async {
     var db = await this.database;
-    var result = await db.rawDelete('DELETE FROM $brTableRecipeIngredient '
+    var result = await db.rawDelete('DELETE FROM $brTableCartRecipe '
       'WHERE $brTableCRColCartId = $cartId AND $brTableCRColRecId = $recipeId');
     return result;
   }
