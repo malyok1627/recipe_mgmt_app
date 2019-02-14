@@ -32,8 +32,7 @@ class RecipeScreenState extends State<RecipeScreen> {
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
 
-  // Value relevant for the Title
-  //TextEditingController amountController = TextEditingController();
+  // Value relevant for checkbox
   List<TextEditingController> _amountControllers = new List();
 
   @override
@@ -48,7 +47,7 @@ class RecipeScreenState extends State<RecipeScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
-            tooltip: 'Save Cart',
+            tooltip: 'Save Recipe',
             onPressed: () {
               //setState(() {
                 //if (_formKey.currentState.validate()) {
@@ -58,8 +57,11 @@ class RecipeScreenState extends State<RecipeScreen> {
                 //}
               //});
      
-              addIngredientsToCart();
-              moveToLastScreen();
+              // addIngredientsToCart();
+              // moveToLastScreen();
+              // _showAlertDialog('Status', 'Recipe Saved Successfully');
+
+              
             },
           ),
         ],
@@ -81,6 +83,15 @@ class RecipeScreenState extends State<RecipeScreen> {
     setState(() {
       numOfCheckboxes[position] = value;
     });
+  }
+
+  // Show alert dialog
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 
   // Delete Recipe from table
@@ -141,15 +152,19 @@ class RecipeScreenState extends State<RecipeScreen> {
       ingredientListFuture.then((ingredientList) {
         List<int> ingredientsId = List<int>(ingredientList.length);
 
-        // Get recipes in this cart
-        Future<List<Ingredient>> ingredientsInCartListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
-        ingredientsInCartListFuture.then((ingredientsInCartList) {
-          for (int i = 0; i < ingredientsInCartList.length; i++) {
-            ingredientsId[ingredientsInCartList[i].id - 1] =
-                ingredientsInCartList[i].id;
+        // Get ingredients in this recipe
+        Future<List<Ingredient>> ingredientsInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
+        ingredientsInRecipeListFuture.then((ingredientsInRecipeList) {
+          for (int i = 0; i < ingredientsInRecipeList.length; i++) {
+            ingredientsId[ingredientsInRecipeList[i].id - 1] = ingredientsInRecipeList[i].id;
+            // Get amount value for each ingredient
+            var ingredientMapListFuture = dbHelper.getRecipeIngredient(recipe.id, ingredientsId[ingredientsInRecipeList[i].id - 1]);
+            ingredientMapListFuture.then((ingredientMapList) {
+              amountList[i] = ingredientMapList[0]['amount'];
+            });
           }
 
-          // Find the length difference between recipes and add appropriate amount of checkboxes
+          // Find the length difference between ingredients and add appropriate amount of checkboxes
           int lengthDiff = ingredientList.length - numOfCheckboxes.length;
           if (lengthDiff > 0) {
             for (int i = 0; i < lengthDiff; i++) {
@@ -233,7 +248,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                           //   }
                           // },
                           decoration: InputDecoration(
-                            labelText: "ingredient amount",
+                            labelText: amountList[position].toString(),
                             labelStyle: titleStyle,
                             contentPadding: EdgeInsets.only(
                                 left: 20, bottom: 15.0, top: 15.0),
