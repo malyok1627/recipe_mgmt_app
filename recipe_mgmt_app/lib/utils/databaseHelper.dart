@@ -261,6 +261,13 @@ class DatabaseHelper {
 	        '$brTableRIColRecId = $recipeId ) )');
     return result;
   }
+  Future<List<Map<String, dynamic>>> getRecipeIngredient(int recipeId, int ingredientId) async {
+    Database db = await this.database;
+    var result = await db.rawQuery(
+      'SELECT * from $brTableRecipeIngredient '
+	    'WHERE $recipeColId = $recipeId  AND $ingredientColId = $ingredientId');
+    return result;
+  }
   // Insert
   Future<int> insertIngredientToRecipe(int recipeId, int ingredientId, double amount) async {
     Database db = await this.database;
