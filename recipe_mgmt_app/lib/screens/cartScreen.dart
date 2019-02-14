@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/cart.dart';
+import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
 import 'package:recipe_mgmt_app/screens/newRecipeScreen.dart';
 import 'package:recipe_mgmt_app/screens/recipeScreen.dart';
@@ -49,6 +50,7 @@ class CartScreenState extends State<CartScreen> {
               onPressed: () {
                 addRecipesToCart();
                 moveToLastScreen();
+                _showAlertDialog('Status', 'Cart Saved Successfully');
               },
             ),
           ],
@@ -113,7 +115,7 @@ class CartScreenState extends State<CartScreen> {
                 ),
                 // Recipe name
                 Container(
-                  width: 100.0,
+                  width: 110.0,
                   child: Padding(
                     padding: EdgeInsets.all(5.0),
                     child: FlatButton(
@@ -131,7 +133,7 @@ class CartScreenState extends State<CartScreen> {
                 // Recipe category
                 // TODO check if the category is chosen!
                 Container(
-                  width: 100.0,
+                  width: 110.0,
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
@@ -205,12 +207,50 @@ class CartScreenState extends State<CartScreen> {
   // Display grocery list
   void getShoppingList() {
     // Get all recipes in cart
+    var groceryList = Map<String, dynamic>();
+    Future<List<Recipe>> recipeInCartListFuture = dbHelper.getRecipeInCartList(cart.id);
+    recipeInCartListFuture.then((recipeInCartList) {
+      for (int i=0; i<recipeInCartList.length; i++) {
+        int recipeId = recipeInCartList[i].id;
+        // Get all ingredients in recipe
+        Future<List<Ingredient>> ingredientInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipeId);
+        ingredientInRecipeListFuture.then((ingredientInRecipeList) {
+          for (int j=0; j<ingredientInRecipeList.length; j++) {
+            // Get ingredient info
+            int ingredientId = ingredientInRecipeList[i].id;
+            String ingredientName = ingredientInRecipeList[i].name;
+
+            // Get amount value for each ingredient
+            var ingredientMapListFuture = dbHelper.getRecipeIngredient(recipeId, ingredientId);
+            ingredientMapListFuture.then((ingredientMapList) {
+              double amount = ingredientMapList[0]['amount'];     
+              groceryList[ingredientName] = amount;
+            });
+            
+            // TODO continue here!
+            print(groceryList.keys);
+            
+          }
+        });
+
+      }
+      //print(recipeInCartList.length);
+    });
 
     // Get all ingredients in recipe
 
     // Sum up all ingredients
 
     // Display in another screen
+  }
+
+  // Show alert dialog
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 
   // Monitor checkbox changes
