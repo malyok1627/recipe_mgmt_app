@@ -129,7 +129,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
     if (result != 0) {
       _showAlertDialog('Status', 'Recipe Saved Successfully');
     } else {
-      _showAlertDialog('Status', 'Recipe Saving Cart');
+      _showAlertDialog('Status', 'Error Saving Recipe');
     }
   }
 

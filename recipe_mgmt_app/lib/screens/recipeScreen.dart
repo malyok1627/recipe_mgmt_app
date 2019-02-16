@@ -57,11 +57,9 @@ class RecipeScreenState extends State<RecipeScreen> {
                 //}
               //});
      
-              // addIngredientsToCart();
-              // moveToLastScreen();
-              // _showAlertDialog('Status', 'Recipe Saved Successfully');
-
-              
+              addIngredientsToCart();
+              moveToLastScreen();
+              _showAlertDialog('Status', 'Recipe Saved Successfully');              
             },
           ),
         ],

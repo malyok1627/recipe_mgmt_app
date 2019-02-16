@@ -13,7 +13,7 @@ class RecipeOrganizerApp extends StatelessWidget {
       title: "Shopping List Manager",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.yellow,
         secondaryHeaderColor: Colors.red,
       ),
       home: CartListScreen(),
