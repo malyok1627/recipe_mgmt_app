@@ -58,7 +58,7 @@ class DatabaseHelper {
   Future<Database> initializeDatabase() async {
     // Get directory path from both iOS and Android
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + "/carts2.db";
+    String path = directory.path + "/carts.db";
     print('$path');
 
     // Open/create a db at a given path
