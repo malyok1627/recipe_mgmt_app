@@ -4,6 +4,7 @@ import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
 import 'package:recipe_mgmt_app/screens/newRecipeScreen.dart';
 import 'package:recipe_mgmt_app/screens/recipeScreen.dart';
+import 'package:recipe_mgmt_app/screens/shoppingListScreen.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -29,6 +30,7 @@ class CartScreenState extends State<CartScreen> {
   List<Recipe> recipeList;
   List<bool> numOfCheckboxes = List<bool>();
   int countRecipes = 0;
+  var groceryList = Map<String, dynamic>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +75,10 @@ class CartScreenState extends State<CartScreen> {
                 ),
                 elevation: 10.0,
                 onPressed: () {
-                  // TODO add new screen - list of groceries
-                  getShoppingList();                  
+                  getShoppingList();
+                  print(this.groceryList);
+                  //navigateToShoppingList(this.groceryList, 'Add Ingredient');
+                  //this.groceryList = null;                 
                 },
               ),
             )
@@ -115,7 +119,7 @@ class CartScreenState extends State<CartScreen> {
                 ),
                 // Recipe name
                 Container(
-                  width: 110.0,
+                  width: 125.0,
                   child: Padding(
                     padding: EdgeInsets.all(5.0),
                     child: FlatButton(
@@ -133,7 +137,7 @@ class CartScreenState extends State<CartScreen> {
                 // Recipe category
                 // TODO check if the category is chosen!
                 Container(
-                  width: 110.0,
+                  width: 120.0,
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Text(
@@ -144,15 +148,17 @@ class CartScreenState extends State<CartScreen> {
                 ),
                 
                 // Delete button
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FlatButton(
+                // Delete Button
+                Container(
+                  height: 20.0,
+                  width: 30.0,
+                  child: GestureDetector(
                     child: Icon(Icons.delete),
-                    onPressed: () {
+                    onTap: () {
                       _delete(context, recipeList[position]);
                     },
-                  ),
-                )
+                  ),                  
+                ),
               ],
             ),
           ),
@@ -205,43 +211,47 @@ class CartScreenState extends State<CartScreen> {
   }
 
   // Display grocery list
-  void getShoppingList() {
+  void getShoppingList() async {
     // Get all recipes in cart
-    var groceryList = Map<String, dynamic>();
     Future<List<Recipe>> recipeInCartListFuture = dbHelper.getRecipeInCartList(cart.id);
-    recipeInCartListFuture.then((recipeInCartList) {
-      for (int i=0; i<recipeInCartList.length; i++) {
+    await recipeInCartListFuture.then((recipeInCartList) {
+      for (int i = 0; i < recipeInCartList.length; i++) {
         int recipeId = recipeInCartList[i].id;
         // Get all ingredients in recipe
         Future<List<Ingredient>> ingredientInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipeId);
         ingredientInRecipeListFuture.then((ingredientInRecipeList) {
-          for (int j=0; j<ingredientInRecipeList.length; j++) {
+          for (int j = 0; j < ingredientInRecipeList.length; j++) {
             // Get ingredient info
-            int ingredientId = ingredientInRecipeList[i].id;
-            String ingredientName = ingredientInRecipeList[i].name;
+            int ingredientId = ingredientInRecipeList[j].id;
+            String ingredientName = ingredientInRecipeList[j].name;
 
             // Get amount value for each ingredient
-            var ingredientMapListFuture = dbHelper.getRecipeIngredient(recipeId, ingredientId);
-            ingredientMapListFuture.then((ingredientMapList) {
-              double amount = ingredientMapList[0]['amount'];     
-              groceryList[ingredientName] = amount;
-            });
-            
-            // TODO continue here!
-            print(groceryList.keys);
-            
+            var ingredientMapFuture = dbHelper.getRecipeIngredient(recipeId, ingredientId);
+            ingredientMapFuture.then((ingredientMap) {
+              double amount = ingredientMap[0]['amount'];  
+              // If there is an ingredient in the list already -> update an amount
+              if (this.groceryList.containsKey(ingredientName)) {
+                this.groceryList[ingredientName] = this.groceryList[ingredientName] + amount;
+              } // Otherwise add it to the list 
+              else {
+                this.groceryList[ingredientName] = amount;
+              }  
+            }); 
           }
         });
-
       }
-      //print(recipeInCartList.length);
     });
+  }
 
-    // Get all ingredients in recipe
+  // Navigate to New Recipe
+  void navigateToShoppingList(Map<String, dynamic> shoppingList, String title) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ShoppingListScreen(shoppingList, title);
+    }));
 
-    // Sum up all ingredients
-
-    // Display in another screen
+    if (result == true) {
+      updateListView();
+    }
   }
 
   // Show alert dialog
