@@ -43,7 +43,10 @@ class RecipeScreenState extends State<RecipeScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),

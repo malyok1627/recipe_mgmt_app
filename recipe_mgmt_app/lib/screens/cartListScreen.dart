@@ -26,7 +26,10 @@ class CartListScreenState extends State<CartListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shopping List Manager'),
+        title: Text(
+          'Shopping List Manager',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: getCartListView(),
       floatingActionButton: FloatingActionButton(
@@ -41,16 +44,17 @@ class CartListScreenState extends State<CartListScreen> {
   }
 
   ListView getCartListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
-
 		return ListView.builder(
 			itemCount: countCarts,
 			itemBuilder: (BuildContext context, int position) {
 				return Card(
-					color: Colors.white,
+					color: Theme.of(context).selectedRowColor,
 					elevation: 4.0,
 					child: ListTile(
-						title: Text(this.cartList[position].name, style: titleStyle,),
+						title: Text(
+              this.cartList[position].name, 
+              style: Theme.of(context).textTheme.title,
+            ),
 						trailing: GestureDetector(
 							child: Icon(Icons.delete, color: Colors.black,),
 							onTap: () {
@@ -60,7 +64,6 @@ class CartListScreenState extends State<CartListScreen> {
         		onTap: () {
 							navigateToCart(this.cartList[position], 'Edit Cart');
 						},
-
 					),
 				);
 			},

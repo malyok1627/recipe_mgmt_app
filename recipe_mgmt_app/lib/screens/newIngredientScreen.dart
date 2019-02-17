@@ -36,7 +36,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
+    TextStyle titleText = Theme.of(context).textTheme.subtitle;
 
     return Scaffold(
       appBar: AppBar(

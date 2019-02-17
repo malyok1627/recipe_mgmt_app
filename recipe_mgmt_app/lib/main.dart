@@ -14,6 +14,8 @@ class RecipeOrganizerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.amber,
+        primaryColorDark: Color.fromRGBO(86, 0, 39, 1.0),
+        selectedRowColor: Color.fromRGBO(255, 233, 125, 1.0),
         brightness: Brightness.light,
       ),
       home: CartListScreen(),

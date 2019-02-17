@@ -44,7 +44,10 @@ class IngredientScreenState extends State<IngredientScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Ingredient"),
+        title: Text(
+          "Ingredient",
+          style: TextStyle(fontWeight: FontWeight.bold),  
+        ),
       ),
       body: Form(
         key: _formKey,

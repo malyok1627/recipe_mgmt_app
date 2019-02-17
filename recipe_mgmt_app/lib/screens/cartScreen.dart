@@ -43,7 +43,10 @@ class CartScreenState extends State<CartScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(appBarTitle),
+          title: Text(
+            appBarTitle,
+            style: TextStyle(fontWeight: FontWeight.bold),  
+          ),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.save),
@@ -67,10 +70,10 @@ class CartScreenState extends State<CartScreen> {
               padding: EdgeInsets.all(10.0),
               child: RaisedButton(
                 color: Theme.of(context).primaryColorDark,
-                textColor: Colors.black,
+                textColor: Colors.white,
                 child: Text(
                   "Show Grocery List",
-                  textScaleFactor: 1.4,
+                  textScaleFactor: 1.1,
                 ),
                 elevation: 10.0,
                 onPressed: () async {
@@ -92,21 +95,22 @@ class CartScreenState extends State<CartScreen> {
   }
 
   ListView getRecipeListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
+    TextStyle titleStyle = Theme.of(context).textTheme.title;
+    TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
 
     return ListView.builder(
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-          color: Colors.white,
+          color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
             padding: EdgeInsets.all(4.0),
             child: Row(
               children: <Widget>[
                 // Checkbox
-                Padding(
-                  padding: EdgeInsets.all(1.0),
+                Container(
+                  width: 50.0,
                   child: Checkbox(
                     value: numOfCheckboxes[position],
                     onChanged: (bool value) {
@@ -114,6 +118,7 @@ class CartScreenState extends State<CartScreen> {
                     },
                   ),
                 ),
+
                 // Recipe name
                 Container(
                   width: 125.0,
@@ -133,7 +138,6 @@ class CartScreenState extends State<CartScreen> {
                 ),
 
                 // Recipe category
-                // TODO check if the category is chosen!
                 Container(
                   width: 120.0,
                   child: Padding(
@@ -147,7 +151,7 @@ class CartScreenState extends State<CartScreen> {
 
                 // Delete Button
                 Container(
-                  height: 20.0,
+                  margin: EdgeInsets.all(5.0),
                   width: 30.0,
                   child: GestureDetector(
                     child: Icon(Icons.delete),

@@ -44,7 +44,10 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),  
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
@@ -65,23 +68,21 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
           children: <Widget>[
             // Recipe name - TextField
             Padding(
-              padding: EdgeInsets.only(
-                  left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Please enter some text";
+                    return "Please enter recipe title";
                   } else {
                     updateName();
                   }
                 },
                 decoration: InputDecoration(
-                  labelText: "Recipe name",
+                  labelText: "Recipe title",
                   labelStyle: titleText,
-                  contentPadding:
-                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                  contentPadding: EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -90,6 +91,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
             ),
 
             // Category drop down menu
+            // TODO check if category was chosen
             Padding(
               padding: EdgeInsets.all(10.0),
               child: DropdownButton(

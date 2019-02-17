@@ -34,7 +34,10 @@ class NewCartScreenState extends State<NewCartScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.save),
@@ -61,13 +64,13 @@ class NewCartScreenState extends State<NewCartScreen> {
                 style: titleText,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Please enter some text";
+                    return "Please enter cart title";
                   } else {
                     updateName();
                   }
                 },
                 decoration: InputDecoration(
-                  labelText: "Cart name",
+                  labelText: "Cart title",
                   labelStyle: titleText,
                   contentPadding:
                       EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
