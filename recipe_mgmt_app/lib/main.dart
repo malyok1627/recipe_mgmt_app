@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/screens/cartListScreen.dart';
-import 'package:recipe_mgmt_app/screens/recipeScreen.dart';
-import 'package:recipe_mgmt_app/screens/ingredientScreen.dart';
 
 void main() => runApp(RecipeOrganizerApp());
 
