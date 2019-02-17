@@ -25,7 +25,10 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('My shopping list'),
+        title: Text(
+          'My shopping list',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.done),
@@ -45,7 +48,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   ListView getShoppingListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
+    TextStyle titleStyle = Theme.of(context).textTheme.title;
     
     return ListView.builder(
       itemCount: shoppingList.length,

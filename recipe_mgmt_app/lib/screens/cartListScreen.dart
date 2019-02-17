@@ -39,6 +39,8 @@ class CartListScreenState extends State<CartListScreen> {
         },
         tooltip: 'Add New Cart',
         child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColorDark,
+        foregroundColor: Theme.of(context).selectedRowColor,
       ),
     );
   }
@@ -49,6 +51,7 @@ class CartListScreenState extends State<CartListScreen> {
 			itemBuilder: (BuildContext context, int position) {
 				return Card(
 					color: Theme.of(context).selectedRowColor,
+          //margin: EdgeInsets.all(10.0),
 					elevation: 4.0,
 					child: ListTile(
 						title: Text(

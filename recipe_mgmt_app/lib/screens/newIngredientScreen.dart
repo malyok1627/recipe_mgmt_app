@@ -36,11 +36,14 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.subtitle;
+    TextStyle titleText = Theme.of(context).textTheme.title;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
@@ -85,25 +88,38 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
               ),
             ),
 
-            // Category drop down menu
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: DropdownButton(
-                items: _units.map((String dropDownStringItem) {
-                  return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem),
-                  );
-                }).toList(),
-                style: titleText,
-                value: ingredient.unitName,
-                onChanged: (value) {
-                  setState(() {
-                    ingredient.unitName = value;
-                  });
-                },
-              ),
-            ),
+            Row(
+              children: <Widget>[
+                // Additional text
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    'Measurement unit:',
+                    style: titleText
+                  ),
+                ),
+
+                // Category drop down menu
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: DropdownButton(
+                    items: _units.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    style: titleText,
+                    value: ingredient.unitName,
+                    onChanged: (value) {
+                      setState(() {
+                        ingredient.unitName = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
-import 'package:recipe_mgmt_app/screens/ingredientScreen.dart';
 import 'package:recipe_mgmt_app/screens/newIngredientScreen.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -53,16 +52,16 @@ class RecipeScreenState extends State<RecipeScreen> {
             tooltip: 'Save Recipe',
             onPressed: () {
               //setState(() {
-                //if (_formKey.currentState.validate()) {
-                  // for (int i=0; i<amountList.length; i++) {
-                  //   print(amountList[i]);
-                  // } 
-                //}
+              //if (_formKey.currentState.validate()) {
+              // for (int i=0; i<amountList.length; i++) {
+              //   print(amountList[i]);
+              // }
+              //}
               //});
-     
+
               addIngredientsToCart();
               moveToLastScreen();
-              _showAlertDialog('Status', 'Recipe Saved Successfully');              
+              _showAlertDialog('Status', 'Recipe Saved Successfully');
             },
           ),
         ],
@@ -75,6 +74,8 @@ class RecipeScreenState extends State<RecipeScreen> {
         },
         tooltip: "Add Ingredient",
         child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColorDark,
+        foregroundColor: Theme.of(context).selectedRowColor,
       ),
     );
   }
@@ -98,7 +99,8 @@ class RecipeScreenState extends State<RecipeScreen> {
   // Delete Recipe from table
   void _delete(BuildContext context, Ingredient ingredient) async {
     int result1 = await dbHelper.deleteIngredient(ingredient.id);
-    int result2 = await dbHelper.deleteIngredientFromRecipe(recipe.id, ingredient.id);
+    int result2 =
+        await dbHelper.deleteIngredientFromRecipe(recipe.id, ingredient.id);
     if (result1 != 0 && result2 != 0) {
       _showSnackBar(context, 'Ingredient Deleted Successfully');
       updateListView();
@@ -140,7 +142,8 @@ class RecipeScreenState extends State<RecipeScreen> {
     for (int i = 0; i < numOfCheckboxes.length; i++) {
       bool tempVal = numOfCheckboxes[i];
       if (tempVal == true) {
-        dbHelper.insertIngredientToRecipe(recipe.id, ingredientList[i].id, amountList[i]);        
+        dbHelper.insertIngredientToRecipe(
+            recipe.id, ingredientList[i].id, amountList[i]);
       }
     }
   }
@@ -149,17 +152,22 @@ class RecipeScreenState extends State<RecipeScreen> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Ingredient>> ingredientListFuture = dbHelper.getIngredientList();
+      Future<List<Ingredient>> ingredientListFuture =
+          dbHelper.getIngredientList();
       ingredientListFuture.then((ingredientList) {
         List<int> ingredientsId = List<int>(ingredientList.length);
 
         // Get ingredients in this recipe
-        Future<List<Ingredient>> ingredientsInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
-        ingredientsInRecipeListFuture.then((ingredientsInRecipeList) {
+        Future<List<Ingredient>> ingredientsInRecipeListFuture =
+            dbHelper.getIngredientInRecipeList(recipe.id);
+        ingredientsInRecipeListFuture.then((ingredientsInRecipeList) async {
           for (int i = 0; i < ingredientsInRecipeList.length; i++) {
-            ingredientsId[ingredientsInRecipeList[i].id - 1] = ingredientsInRecipeList[i].id;
+            ingredientsId[ingredientsInRecipeList[i].id - 1] =
+                ingredientsInRecipeList[i].id;
             // Get amount value for each ingredient
-            var ingredientMapListFuture = dbHelper.getRecipeIngredient(recipe.id, ingredientsId[ingredientsInRecipeList[i].id - 1]);
+            Future<List<Map<String, dynamic>>> ingredientMapListFuture =
+                dbHelper.getRecipeIngredient(recipe.id,
+                    ingredientsId[ingredientsInRecipeList[i].id - 1]);
             ingredientMapListFuture.then((ingredientMapList) {
               amountList[i] = ingredientMapList[0]['amount'];
             });
@@ -194,7 +202,8 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Get List of ingredients
   ListView getIngredientListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
+    TextStyle subheadStyle = Theme.of(context).textTheme.subhead;
+    TextStyle titleStyle = Theme.of(context).textTheme.title;
 
     return ListView.builder(
       itemCount: countIngredients,
@@ -203,10 +212,11 @@ class RecipeScreenState extends State<RecipeScreen> {
         _amountControllers.add(new TextEditingController());
 
         return Card(
-          color: Colors.white,
+          //margin: EdgeInsets.all(10.0),
+          color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
-            padding: EdgeInsets.all(4.0),
+            //padding: EdgeInsets.all(4.0),
             child: Row(
               children: <Widget>[
                 // Checkbox
@@ -219,54 +229,55 @@ class RecipeScreenState extends State<RecipeScreen> {
                     },
                   ),
                 ),
-                Column(
-                  children: <Widget>[
-                    // Ingredient Name
-                    Padding(
-                      padding: EdgeInsets.all(2.0),
-                      child: Text(
-                        ingredientList[position].name,
-                        style: titleStyle,
-                      ),
+
+                // Ingredient Name
+                Container(
+                  width: 140.0,
+                  height: 40.0,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      ingredientList[position].name,
+                      style: titleStyle,
                     ),
-                    // Amount of Ingredient -> TextField
-                    Padding(
-                      padding: EdgeInsets.all(2.0),
-                      child: Container(
-                        height: 55.0,
-                        width: 230.0,
-                        child: TextField(
-                          controller: _amountControllers[position],
-                          style: titleStyle,
-                          onChanged: (value) {
-                            updateAmount(position);
-                          },
-                          // validator: (value) {
-                          //   if (value.isEmpty) {
-                          //     return "Please enter some text";
-                          //   } else {
-                          //     updateName(position);
-                          //   }
-                          // },
-                          decoration: InputDecoration(
-                            labelText: amountList[position].toString(),
-                            labelStyle: titleStyle,
-                            contentPadding: EdgeInsets.only(
-                                left: 20, bottom: 15.0, top: 15.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
+                  ),
+                ),
+
+                Container(
+                  width: 80.0,
+                  //height: 20.0,
+                  //child: Padding(
+                    //padding: EdgeInsets.all(1.0),
+                    child: TextField(
+                      controller: _amountControllers[position],
+                      style: subheadStyle,
+                      onChanged: (value) {
+                        updateAmount(position);
+                      },
+                      // validator: (value) {
+                      //   if (value.isEmpty) {
+                      //     return "Please enter some text";
+                      //   } else {
+                      //     updateName(position);
+                      //   }
+                      // },
+                      decoration: InputDecoration(
+                        labelText: amountList[position].toString(),
+                        labelStyle: subheadStyle,
+                        contentPadding: EdgeInsets.only(
+                            left: 20, bottom: 10.0, top: 10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                     ),
-                  ],
+                  //),
                 ),
 
                 // Ingredient unit
                 Container(
                   height: 5.0,
-                  width: 20.0,
+                  width: 25.0,
                   margin: EdgeInsets.only(left: 10.0),
                   child: Text(ingredientList[position].unitName),
                 ),
@@ -274,13 +285,13 @@ class RecipeScreenState extends State<RecipeScreen> {
                 // Delete Button
                 Container(
                   height: 20.0,
-                  width: 30.0,
+                  width: 20.0,
                   child: GestureDetector(
                     child: Icon(Icons.delete),
                     onTap: () {
                       _delete(context, ingredientList[position]);
                     },
-                  ),                  
+                  ),
                 )
               ],
             ),

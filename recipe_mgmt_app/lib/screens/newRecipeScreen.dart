@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
+import 'package:recipe_mgmt_app/screens/dropDownFormField.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 
 class NewRecipeScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
       appBar: AppBar(
         title: Text(
           appBarTitle,
-          style: TextStyle(fontWeight: FontWeight.bold),  
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           IconButton(
@@ -68,7 +69,8 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
           children: <Widget>[
             // Recipe name - TextField
             Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
@@ -82,7 +84,8 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 decoration: InputDecoration(
                   labelText: "Recipe title",
                   labelStyle: titleText,
-                  contentPadding: EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -90,25 +93,94 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
               ),
             ),
 
-            // Category drop down menu
-            // TODO check if category was chosen
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: DropdownButton(
-                items: _categories.map((String dropDownStringItem) {
-                  return DropdownMenuItem<String>(
-                    value: dropDownStringItem,
-                    child: Text(dropDownStringItem),
-                  );
-                }).toList(),
-                style: titleText,
-                value: recipe.category,
-                onChanged: (value) {
-                  setState(() {
-                    recipe.category = value;
-                  });
-                },
-              ),
+            Row(
+              children: <Widget>[
+                // Additional text
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text('Recipe category:', style: titleText),
+                ),
+
+                // Padding(
+                //   padding: EdgeInsets.all(10.0),
+                //   child: DropdownFormField<String>(
+                //   validator: (value) {
+                //     if (value == null) {
+                //       return 'Required';
+                //     }
+                //   },
+                //   onSaved: (value) {
+                //     // ...
+                //   },
+                //   decoration: InputDecoration(
+                //     border: UnderlineInputBorder(),
+                //     filled: true,
+                //     labelText: 'Demo',
+                //   ),
+                //   initialValue: null,
+                //   items: [
+                //     DropdownMenuItem<String>(
+                //       value: '1',
+                //       child: Text('1'),
+                //     ),
+                //     DropdownMenuItem<String>(
+                //       value: '2',
+                //       child: Text('2'),
+                //     )
+                //   ],
+                // ),
+                // ),
+
+
+                ///////
+                ///
+                
+                ///
+                ///////
+
+                // Category drop down menu
+                // TODO check if category was chosen
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      hint: new Text("select category"),
+                      value: recipe.category,
+                      onChanged: (value) {
+                        setState(() {
+                          recipe.category = value;
+                        });
+                      },
+                      items: _categories.map((String dropDownStringItem) {
+                        return DropdownMenuItem<String>(
+                          value: dropDownStringItem,
+                          child: Text(dropDownStringItem),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                
+
+                // Padding(
+                //   padding: EdgeInsets.all(10.0),
+                //   child: DropdownButton(
+                //     items: _categories.map((String dropDownStringItem) {
+                //       return DropdownMenuItem<String>(
+                //         value: dropDownStringItem,
+                //         child: Text(dropDownStringItem),
+                //       );
+                //     }).toList(),
+                //     style: titleText,
+                //     value: recipe.category,
+                //     onChanged: (value) {
+                //       setState(() {
+                //         recipe.category = value;
+                //       });
+                //     },
+                //   ),
+                // ),
+              ],
             ),
           ],
         ),

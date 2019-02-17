@@ -42,56 +42,59 @@ class CartScreenState extends State<CartScreen> {
     TextStyle titleText = Theme.of(context).textTheme.title;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            appBarTitle,
-            style: TextStyle(fontWeight: FontWeight.bold),  
+      appBar: AppBar(
+        title: Text(
+          appBarTitle,
+          style: TextStyle(fontWeight: FontWeight.bold),  
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Save Cart',
+            onPressed: () {
+              addRecipesToCart();
+              moveToLastScreen();
+              _showAlertDialog('Status', 'Cart Saved Successfully');
+            },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.save),
-              tooltip: 'Save Cart',
-              onPressed: () {
-                addRecipesToCart();
-                moveToLastScreen();
-                _showAlertDialog('Status', 'Cart Saved Successfully');
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: getRecipeListView(),
+          ),
+
+          // ShowGroceryList button
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: RaisedButton(
+              color: Theme.of(context).primaryColorDark,
+              textColor: Theme.of(context).selectedRowColor,
+              child: Text(
+                "Show Grocery List",
+                textScaleFactor: 1.1,
+              ),
+              elevation: 10.0,
+              onPressed: () async {
+                Map<String, dynamic> shoppingList = await getShoppingList();
+                navigateToShoppingList(shoppingList);
               },
             ),
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            Expanded(
-              child: getRecipeListView(),
-            ),
-
-            // ShowGroceryList button
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).primaryColorDark,
-                textColor: Colors.white,
-                child: Text(
-                  "Show Grocery List",
-                  textScaleFactor: 1.1,
-                ),
-                elevation: 10.0,
-                onPressed: () async {
-                  Map<String, dynamic> shoppingList = await getShoppingList();
-                  navigateToShoppingList(shoppingList);
-                },
-              ),
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Recipe newRecipe = Recipe('', null);
-            navigateToNewRecipe(newRecipe, 'Add Recipe');
-          },
-          tooltip: 'Add New Recipe',
-          child: Icon(Icons.add),
-        ));
+          )
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Recipe newRecipe = Recipe('', null);
+          navigateToNewRecipe(newRecipe, 'Add Recipe');
+        },
+        tooltip: 'Add New Recipe',
+        child: Icon(Icons.add),
+        backgroundColor: Theme.of(context).primaryColorDark,
+        foregroundColor: Theme.of(context).selectedRowColor,
+      )
+    );
   }
 
   ListView getRecipeListView() {
@@ -102,15 +105,17 @@ class CartScreenState extends State<CartScreen> {
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
+          //margin: EdgeInsets.all(10.0),
           color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
-            padding: EdgeInsets.all(4.0),
+            //padding: EdgeInsets.all(4.0),
             child: Row(
               children: <Widget>[
                 // Checkbox
                 Container(
                   width: 50.0,
+                  height: 40.0,
                   child: Checkbox(
                     value: numOfCheckboxes[position],
                     onChanged: (bool value) {
@@ -121,9 +126,10 @@ class CartScreenState extends State<CartScreen> {
 
                 // Recipe name
                 Container(
-                  width: 125.0,
-                  child: Padding(
-                    padding: EdgeInsets.all(5.0),
+                  width: 160.0,
+                  height: 40.0,
+                  //child: Padding(
+                    //padding: EdgeInsets.all(5.0),
                     child: FlatButton(
                       child: Text(
                         recipeList[position].name,
@@ -134,14 +140,15 @@ class CartScreenState extends State<CartScreen> {
                             this.recipeList[position], 'Edit Recipe');
                       },
                     ),
-                  ),
+                  //),
                 ),
 
                 // Recipe category
                 Container(
-                  width: 120.0,
+                  width: 80.0,
+                  height: 40.0,
                   child: Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.only(top: 8.0),
                     child: Text(
                       recipeList[position].category,
                       style: titleStyle,
@@ -153,6 +160,7 @@ class CartScreenState extends State<CartScreen> {
                 Container(
                   margin: EdgeInsets.all(5.0),
                   width: 30.0,
+                  height: 40.0,
                   child: GestureDetector(
                     child: Icon(Icons.delete),
                     onTap: () {
