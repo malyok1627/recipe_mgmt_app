@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 
 class ShoppingListScreen extends StatefulWidget {
-  final String appBarTitle;
   final Map<String, dynamic> shoppingList;
 
-  ShoppingListScreen(this.shoppingList, this.appBarTitle);
+  ShoppingListScreen(this.shoppingList);
 
   @override
   State<StatefulWidget> createState() {
-    return ShoppingListScreenState(this.shoppingList, this.appBarTitle);
+    return ShoppingListScreenState(this.shoppingList);
   }
 }
 
 class ShoppingListScreenState extends State<ShoppingListScreen> {
-  String appBarTitle;
   final Map<String, dynamic> shoppingList;
 
-  // Used for text validation
-  final _formKey = GlobalKey<FormState>();
-  List<bool> numOfCheckboxes = List<bool>();
+  ShoppingListScreenState(this.shoppingList);
 
-  ShoppingListScreenState(this.shoppingList, this.appBarTitle);
+  List<bool> numOfCheckboxes = List<bool>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +25,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Text('My shopping list'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.done),
@@ -44,12 +40,17 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
+  int getAmountOfCheckboxes() {
+    return shoppingList.length;
+  }
+
   ListView getShoppingListView() {
     TextStyle titleStyle = Theme.of(context).textTheme.subhead;
-
+    
     return ListView.builder(
       itemCount: shoppingList.length,
       itemBuilder: (BuildContext context, int position) {
+        numOfCheckboxes.add(false);
         return Card(
           color: Colors.white,
           elevation: 4.0,
@@ -58,13 +59,37 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
             child: Row(
               children: <Widget>[
                 // Checkbox
-                Padding(
-                  padding: EdgeInsets.all(1.0),
+                Container(
+                  width: 50.0,
                   child: Checkbox(
                     value: numOfCheckboxes[position],
-                    onChanged: (bool value) {
-                      boxStateChange(value, position);
+                    onChanged: (bool val) {
+                      boxStateChange(val, position);
                     },
+                  ),
+                ),
+
+                // Ingredient name
+                Container(
+                  width: 125.0,
+                  child: Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      shoppingList.keys.elementAt(position),
+                      style: titleStyle,
+                    ),
+                  ),
+                ),
+
+                // Ingredient amount
+                Container(
+                  width: 125.0,
+                  child: Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: Text(
+                      shoppingList.values.elementAt(position).toString(),
+                      style: titleStyle,
+                    ),
                   ),
                 ),
               ],

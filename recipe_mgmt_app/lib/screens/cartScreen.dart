@@ -30,7 +30,6 @@ class CartScreenState extends State<CartScreen> {
   List<Recipe> recipeList;
   List<bool> numOfCheckboxes = List<bool>();
   int countRecipes = 0;
-  var groceryList = Map<String, dynamic>();
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +73,9 @@ class CartScreenState extends State<CartScreen> {
                   textScaleFactor: 1.4,
                 ),
                 elevation: 10.0,
-                onPressed: () {
-                  getShoppingList();
-                  print(this.groceryList);
-                  //navigateToShoppingList(this.groceryList, 'Add Ingredient');
-                  //this.groceryList = null;                 
+                onPressed: () async {
+                  Map<String, dynamic> shoppingList = await getShoppingList();
+                  navigateToShoppingList(shoppingList);
                 },
               ),
             )
@@ -128,12 +125,13 @@ class CartScreenState extends State<CartScreen> {
                         style: titleStyle,
                       ),
                       onPressed: () {
-                        navigateToRecipe(this.recipeList[position], 'Edit Recipe');
+                        navigateToRecipe(
+                            this.recipeList[position], 'Edit Recipe');
                       },
                     ),
                   ),
                 ),
-                
+
                 // Recipe category
                 // TODO check if the category is chosen!
                 Container(
@@ -146,8 +144,7 @@ class CartScreenState extends State<CartScreen> {
                     ),
                   ),
                 ),
-                
-                // Delete button
+
                 // Delete Button
                 Container(
                   height: 20.0,
@@ -157,7 +154,7 @@ class CartScreenState extends State<CartScreen> {
                     onTap: () {
                       _delete(context, recipeList[position]);
                     },
-                  ),                  
+                  ),
                 ),
               ],
             ),
@@ -187,7 +184,6 @@ class CartScreenState extends State<CartScreen> {
           int lengthDiff = recipeList.length - numOfCheckboxes.length;
           if (lengthDiff > 0) {
             for (int i = 0; i < lengthDiff; i++) {
-
               // check if this index corresponds to recipesInCartList
               if (recipesId[i] == null) {
                 numOfCheckboxes.add(false);
@@ -205,53 +201,44 @@ class CartScreenState extends State<CartScreen> {
             this.recipeList = recipeList;
             this.countRecipes = recipeList.length;
           });
-        });       
+        });
       });
     });
   }
 
   // Display grocery list
-  void getShoppingList() async {
+  Future<Map<String, dynamic>> getShoppingList() async {
+    Map<String, dynamic> groceryList = Map<String, dynamic>();
+
     // Get all recipes in cart
-    Future<List<Recipe>> recipeInCartListFuture = dbHelper.getRecipeInCartList(cart.id);
-    await recipeInCartListFuture.then((recipeInCartList) {
-      for (int i = 0; i < recipeInCartList.length; i++) {
-        int recipeId = recipeInCartList[i].id;
-        // Get all ingredients in recipe
-        Future<List<Ingredient>> ingredientInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipeId);
-        ingredientInRecipeListFuture.then((ingredientInRecipeList) {
-          for (int j = 0; j < ingredientInRecipeList.length; j++) {
-            // Get ingredient info
-            int ingredientId = ingredientInRecipeList[j].id;
-            String ingredientName = ingredientInRecipeList[j].name;
+    List<Recipe> recipeInCartList = await dbHelper.getRecipeInCartList(cart.id);
+    
+    for (int i = 0; i < recipeInCartList.length; i++) {
+      int recipeId = recipeInCartList[i].id;
 
-            // Get amount value for each ingredient
-            var ingredientMapFuture = dbHelper.getRecipeIngredient(recipeId, ingredientId);
-            ingredientMapFuture.then((ingredientMap) {
-              double amount = ingredientMap[0]['amount'];  
-              // If there is an ingredient in the list already -> update an amount
-              if (this.groceryList.containsKey(ingredientName)) {
-                this.groceryList[ingredientName] = this.groceryList[ingredientName] + amount;
-              } // Otherwise add it to the list 
-              else {
-                this.groceryList[ingredientName] = amount;
-              }  
-            }); 
-          }
-        });
+      // Get all ingredients in recipe
+      List<Ingredient> ingredientInRecipeList = await dbHelper.getIngredientInRecipeList(recipeId);
+      for (int j = 0; j < ingredientInRecipeList.length; j++) {
+
+        // Get ingredient info
+        int ingredientId = ingredientInRecipeList[j].id;
+        String ingredientName = ingredientInRecipeList[j].name;
+
+        // Get amount value for each ingredient
+        List<Map<String, dynamic>> ingredientMap = await dbHelper.getRecipeIngredient(recipeId, ingredientId);
+
+        double amount = ingredientMap[0]['amount'];
+
+        // If there is an ingredient in the list already -> update an amount
+        if (groceryList.containsKey(ingredientName)) {
+          groceryList[ingredientName] = groceryList[ingredientName] + amount;
+        } // Otherwise add it to the list
+        else {
+          groceryList[ingredientName] = amount;
+        }        
       }
-    });
-  }
-
-  // Navigate to New Recipe
-  void navigateToShoppingList(Map<String, dynamic> shoppingList, String title) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ShoppingListScreen(shoppingList, title);
-    }));
-
-    if (result == true) {
-      updateListView();
     }
+    return groceryList;
   }
 
   // Show alert dialog
@@ -270,22 +257,12 @@ class CartScreenState extends State<CartScreen> {
     });
   }
 
-  // Navigate to Existing Recipe
-  void navigateToRecipe(Recipe recipe, String title) async {
-	  bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-		  return RecipeScreen(recipe, title);
-	  }));
-
-	  if (result == true) {
-	  	updateListView();
-	  }
-  }
-
   // Move back
   void moveToLastScreen() {
     Navigator.pop(context, true);
   }
 
+  // Add Recipes to Cart
   void addRecipesToCart() {
     // Add recipes to cart in DB
     for (int i = 0; i < numOfCheckboxes.length; i++) {
@@ -300,6 +277,28 @@ class CartScreenState extends State<CartScreen> {
   void navigateToNewRecipe(Recipe recipe, String title) async {
     bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return NewRecipeScreen(recipe, title);
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  // Navigate to Existing Recipe
+  void navigateToRecipe(Recipe recipe, String title) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RecipeScreen(recipe, title);
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  // Navigate to Shopping List
+  void navigateToShoppingList(Map<String, dynamic> list) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ShoppingListScreen(list);
     }));
 
     if (result == true) {
