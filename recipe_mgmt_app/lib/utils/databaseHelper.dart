@@ -324,11 +324,18 @@ class DatabaseHelper {
       '($cartId, $recipeId);');
     return result;
   }
-  // Delete
+  // Delete based on recipe and cart
   Future<int> deleteRecipeFromCart(int cartId, int recipeId) async {
     var db = await this.database;
     var result = await db.rawDelete('DELETE FROM $brTableCartRecipe '
       'WHERE $brTableCRColCartId = $cartId AND $brTableCRColRecId = $recipeId');
+    return result;
+  }
+  // Delete based on cart
+  Future<int> deleteAllRecipesFromCart(int cartId) async {
+    var db = await this.database;
+    var result = await db.rawDelete('DELETE FROM $brTableCartRecipe '
+      'WHERE $brTableCRColCartId = $cartId');
     return result;
   }
   // Get "Map List" and convert to "Recipe List"
