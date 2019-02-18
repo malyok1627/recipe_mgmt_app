@@ -73,21 +73,6 @@ class CartListScreenState extends State<CartListScreen> {
     );
   }
 
-  // Delete Cart 
-  void _delete(BuildContext context, Cart cart) async {
-    int result = await dbHelper.deleteCart(cart.id);
-		if (result != 0) {
-			_showSnackBar(context, 'Cart Deleted Successfully');
-			updateListView();
-		}
-  }
-
-  // Snack bar
-  void _showSnackBar(BuildContext context, String message) {
-		final snackBar = SnackBar(content: Text(message));
-		Scaffold.of(context).showSnackBar(snackBar);
-  }
-
   // Update List View
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
@@ -100,6 +85,24 @@ class CartListScreenState extends State<CartListScreen> {
 				});
 			});
 		});
+  }
+
+  // Delete Cart 
+  void _delete(BuildContext context, Cart cart) async {
+    int result = await dbHelper.deleteCart(cart.id);
+		if (result != 0) {
+			_showSnackBar(context, 'Cart Deleted Successfully');
+			updateListView();
+		}
+  }
+
+  // Snack bar
+  void _showSnackBar(BuildContext context, String message) {
+		final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+    );
+		Scaffold.of(context).showSnackBar(snackBar);
   }
 
   // Navigate to New Cart

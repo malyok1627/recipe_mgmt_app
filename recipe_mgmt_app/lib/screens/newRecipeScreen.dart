@@ -97,46 +97,9 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
               children: <Widget>[
                 // Additional text
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.only(left: 10.0, right: 5.0),
                   child: Text('Recipe category:', style: titleText),
                 ),
-
-                // Padding(
-                //   padding: EdgeInsets.all(10.0),
-                //   child: DropdownFormField<String>(
-                //   validator: (value) {
-                //     if (value == null) {
-                //       return 'Required';
-                //     }
-                //   },
-                //   onSaved: (value) {
-                //     // ...
-                //   },
-                //   decoration: InputDecoration(
-                //     border: UnderlineInputBorder(),
-                //     filled: true,
-                //     labelText: 'Demo',
-                //   ),
-                //   initialValue: null,
-                //   items: [
-                //     DropdownMenuItem<String>(
-                //       value: '1',
-                //       child: Text('1'),
-                //     ),
-                //     DropdownMenuItem<String>(
-                //       value: '2',
-                //       child: Text('2'),
-                //     )
-                //   ],
-                // ),
-                // ),
-
-
-                ///////
-                ///
-                
-                ///
-                ///////
 
                 // Category drop down menu
                 // TODO check if category was chosen
@@ -144,7 +107,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                   padding: EdgeInsets.all(10.0),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      hint: new Text("select category"),
+                      hint: new Text("category"),
                       value: recipe.category,
                       onChanged: (value) {
                         setState(() {

@@ -38,9 +38,6 @@ class CartScreenState extends State<CartScreen> {
       updateListView();
     }
 
-    // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,9 +49,7 @@ class CartScreenState extends State<CartScreen> {
             icon: const Icon(Icons.save),
             tooltip: 'Save Cart',
             onPressed: () {
-              addRecipesToCart();
-              moveToLastScreen();
-              _showAlertDialog('Status', 'Cart Saved Successfully');
+              _save();
             },
           ),
         ],
@@ -99,7 +94,6 @@ class CartScreenState extends State<CartScreen> {
 
   ListView getRecipeListView() {
     TextStyle titleStyle = Theme.of(context).textTheme.title;
-    TextStyle subtitleStyle = Theme.of(context).textTheme.subtitle;
 
     return ListView.builder(
       itemCount: countRecipes,
@@ -126,7 +120,7 @@ class CartScreenState extends State<CartScreen> {
 
                 // Recipe name
                 Container(
-                  width: 160.0,
+                  width: 130.0,
                   height: 40.0,
                   //child: Padding(
                     //padding: EdgeInsets.all(5.0),
@@ -145,7 +139,7 @@ class CartScreenState extends State<CartScreen> {
 
                 // Recipe category
                 Container(
-                  width: 80.0,
+                  width: 90.0,
                   height: 40.0,
                   child: Padding(
                     padding: EdgeInsets.only(top: 8.0),
@@ -175,6 +169,42 @@ class CartScreenState extends State<CartScreen> {
       },
     );
   }
+
+  // Display grocery list
+  Future<Map<String, dynamic>> getShoppingList() async {
+    Map<String, dynamic> groceryList = Map<String, dynamic>();
+
+    // Get all recipes in cart
+    List<Recipe> recipeInCartList = await dbHelper.getRecipeInCartList(cart.id);
+    
+    for (int i = 0; i < recipeInCartList.length; i++) {
+      int recipeId = recipeInCartList[i].id;
+
+      // Get all ingredients in recipe
+      List<Ingredient> ingredientInRecipeList = await dbHelper.getIngredientInRecipeList(recipeId);
+      for (int j = 0; j < ingredientInRecipeList.length; j++) {
+
+        // Get ingredient info
+        int ingredientId = ingredientInRecipeList[j].id;
+        String ingredientName = ingredientInRecipeList[j].name;
+
+        // Get amount value for each ingredient
+        List<Map<String, dynamic>> ingredientMap = await dbHelper.getRecipeIngredient(recipeId, ingredientId);
+
+        double amount = ingredientMap[0]['amount'];
+
+        // If there is an ingredient in the list already -> update an amount
+        if (groceryList.containsKey(ingredientName)) {
+          groceryList[ingredientName] = groceryList[ingredientName] + amount;
+        } // Otherwise add it to the list
+        else {
+          groceryList[ingredientName] = amount;
+        }        
+      }
+    }
+    return groceryList;
+  }
+
 
   // Update List View
   void updateListView() {
@@ -218,41 +248,6 @@ class CartScreenState extends State<CartScreen> {
     });
   }
 
-  // Display grocery list
-  Future<Map<String, dynamic>> getShoppingList() async {
-    Map<String, dynamic> groceryList = Map<String, dynamic>();
-
-    // Get all recipes in cart
-    List<Recipe> recipeInCartList = await dbHelper.getRecipeInCartList(cart.id);
-    
-    for (int i = 0; i < recipeInCartList.length; i++) {
-      int recipeId = recipeInCartList[i].id;
-
-      // Get all ingredients in recipe
-      List<Ingredient> ingredientInRecipeList = await dbHelper.getIngredientInRecipeList(recipeId);
-      for (int j = 0; j < ingredientInRecipeList.length; j++) {
-
-        // Get ingredient info
-        int ingredientId = ingredientInRecipeList[j].id;
-        String ingredientName = ingredientInRecipeList[j].name;
-
-        // Get amount value for each ingredient
-        List<Map<String, dynamic>> ingredientMap = await dbHelper.getRecipeIngredient(recipeId, ingredientId);
-
-        double amount = ingredientMap[0]['amount'];
-
-        // If there is an ingredient in the list already -> update an amount
-        if (groceryList.containsKey(ingredientName)) {
-          groceryList[ingredientName] = groceryList[ingredientName] + amount;
-        } // Otherwise add it to the list
-        else {
-          groceryList[ingredientName] = amount;
-        }        
-      }
-    }
-    return groceryList;
-  }
-
   // Show alert dialog
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
@@ -283,6 +278,11 @@ class CartScreenState extends State<CartScreen> {
         dbHelper.insertRecipeToCart(cart.id, recipeList[i].id);
       }
     }
+  }
+
+  // Delete all Recipes from Cart
+  void deleteRecipesFromCart() {
+    dbHelper.deleteAllRecipesFromCart(cart.id);
   }
 
   // Navigate to New Recipe
@@ -321,16 +321,30 @@ class CartScreenState extends State<CartScreen> {
   // Delete Recipe from table
   void _delete(BuildContext context, Recipe recipe) async {
     int result1 = await dbHelper.deleteRecipe(recipe.id);
-    int result2 = await dbHelper.deleteRecipeFromCart(cart.id, recipe.id);
-    if (result1 != 0 && result2 != 0) {
+    await dbHelper.deleteRecipeFromCart(cart.id, recipe.id);
+    if (result1 != 0) {
       _showSnackBar(context, 'Recipe Deleted Successfully');
       updateListView();
     }
   }
 
+  // Save button pressed
+  void _save() async {
+    // Delete all entries from bridge table
+    deleteRecipesFromCart();
+    // Add marked recipes to bridge table
+    addRecipesToCart();
+    // Move to last screen
+    moveToLastScreen();
+    _showAlertDialog('Status', 'Cart Saved Successfully');
+  }
+
   // Snack bar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+      );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 }

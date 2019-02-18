@@ -55,7 +55,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
       itemBuilder: (BuildContext context, int position) {
         numOfCheckboxes.add(false);
         return Card(
-          color: Colors.white,
+          color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
             padding: EdgeInsets.all(4.0),

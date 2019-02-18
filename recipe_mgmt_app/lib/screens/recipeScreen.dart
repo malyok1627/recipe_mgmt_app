@@ -40,6 +40,7 @@ class RecipeScreenState extends State<RecipeScreen> {
       ingredientList = List<Ingredient>();
       updateListView();
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -80,72 +81,105 @@ class RecipeScreenState extends State<RecipeScreen> {
     );
   }
 
-  // Monitor checkbox changes
-  void boxStateChange(bool value, int position) {
-    setState(() {
-      numOfCheckboxes[position] = value;
-    });
-  }
+  // Get List of ingredients
+  ListView getIngredientListView() {
+    TextStyle subheadStyle = Theme.of(context).textTheme.subhead;
+    TextStyle titleStyle = Theme.of(context).textTheme.title;
 
-  // Show alert dialog
-  void _showAlertDialog(String title, String message) {
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
+    return ListView.builder(
+      itemCount: countIngredients,
+      itemBuilder: (BuildContext context, int position) {
+        // Add an amountController
+        _amountControllers.add(new TextEditingController());
+
+        return Card(
+          //margin: EdgeInsets.all(10.0),
+          color: Theme.of(context).selectedRowColor,
+          elevation: 4.0,
+          child: Container(
+            //padding: EdgeInsets.all(4.0),
+            child: Row(
+              children: <Widget>[
+                // Checkbox
+                Padding(
+                  padding: EdgeInsets.all(1.0),
+                  child: Checkbox(
+                    value: numOfCheckboxes[position],
+                    onChanged: (bool value) {
+                      boxStateChange(value, position);
+                    },
+                  ),
+                ),
+
+                // Ingredient Name
+                Container(
+                  width: 120.0,
+                  height: 40.0,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      ingredientList[position].name,
+                      style: titleStyle,
+                    ),
+                  ),
+                ),
+
+                Container(
+                  width: 80.0,
+                  //height: 20.0,
+                  //child: Padding(
+                    //padding: EdgeInsets.all(1.0),
+                    child: TextField(
+                      controller: _amountControllers[position],
+                      style: subheadStyle,
+                      onChanged: (value) {
+                        updateAmount(position);
+                      },
+                      // validator: (value) {
+                      //   if (value.isEmpty) {
+                      //     return "Please enter some text";
+                      //   } else {
+                      //     updateName(position);
+                      //   }
+                      // },
+                      decoration: InputDecoration(
+                        labelText: amountList[position].toString(),
+                        labelStyle: subheadStyle,
+                        contentPadding: EdgeInsets.only(
+                            left: 20, bottom: 10.0, top: 10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  //),
+                ),
+
+                // Ingredient unit
+                Container(
+                  height: 5.0,
+                  width: 20.0,
+                  margin: EdgeInsets.only(left: 10.0),
+                  child: Text(ingredientList[position].unitName),
+                ),
+
+                // Delete Button
+                Container(
+                  height: 20.0,
+                  width: 20.0,
+                  child: GestureDetector(
+                    child: Icon(Icons.delete),
+                    onTap: () {
+                      _delete(context, ingredientList[position]);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
-    showDialog(context: context, builder: (_) => alertDialog);
-  }
-
-  // Delete Recipe from table
-  void _delete(BuildContext context, Ingredient ingredient) async {
-    int result1 = await dbHelper.deleteIngredient(ingredient.id);
-    int result2 =
-        await dbHelper.deleteIngredientFromRecipe(recipe.id, ingredient.id);
-    if (result1 != 0 && result2 != 0) {
-      _showSnackBar(context, 'Ingredient Deleted Successfully');
-      updateListView();
-    }
-  }
-
-  // Move back
-  void moveToLastScreen() {
-    Navigator.pop(context, true);
-  }
-
-  // Snack bar
-  void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
-
-  // Navigate to New Recipe
-  void navigateToNewIngredient(Ingredient ingredient, String title) async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return NewIngredientScreen(ingredient, title);
-    }));
-
-    if (result == true) {
-      updateListView();
-    }
-  }
-
-  // Update amount of ingredient
-  void updateAmount(int position) {
-    setState(() {
-      amountList[position] = double.parse(_amountControllers[position].text);
-    });
-  }
-
-  void addIngredientsToCart() {
-    // Add recipes to cart in DB
-    for (int i = 0; i < numOfCheckboxes.length; i++) {
-      bool tempVal = numOfCheckboxes[i];
-      if (tempVal == true) {
-        dbHelper.insertIngredientToRecipe(
-            recipe.id, ingredientList[i].id, amountList[i]);
-      }
-    }
   }
 
   // Update List View
@@ -200,104 +234,73 @@ class RecipeScreenState extends State<RecipeScreen> {
     });
   }
 
-  // Get List of ingredients
-  ListView getIngredientListView() {
-    TextStyle subheadStyle = Theme.of(context).textTheme.subhead;
-    TextStyle titleStyle = Theme.of(context).textTheme.title;
+  // Monitor checkbox changes
+  void boxStateChange(bool value, int position) {
+    setState(() {
+      numOfCheckboxes[position] = value;
+    });
+  }
 
-    return ListView.builder(
-      itemCount: countIngredients,
-      itemBuilder: (BuildContext context, int position) {
-        // Add an amountController
-        _amountControllers.add(new TextEditingController());
-
-        return Card(
-          //margin: EdgeInsets.all(10.0),
-          color: Theme.of(context).selectedRowColor,
-          elevation: 4.0,
-          child: Container(
-            //padding: EdgeInsets.all(4.0),
-            child: Row(
-              children: <Widget>[
-                // Checkbox
-                Padding(
-                  padding: EdgeInsets.all(1.0),
-                  child: Checkbox(
-                    value: numOfCheckboxes[position],
-                    onChanged: (bool value) {
-                      boxStateChange(value, position);
-                    },
-                  ),
-                ),
-
-                // Ingredient Name
-                Container(
-                  width: 140.0,
-                  height: 40.0,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      ingredientList[position].name,
-                      style: titleStyle,
-                    ),
-                  ),
-                ),
-
-                Container(
-                  width: 80.0,
-                  //height: 20.0,
-                  //child: Padding(
-                    //padding: EdgeInsets.all(1.0),
-                    child: TextField(
-                      controller: _amountControllers[position],
-                      style: subheadStyle,
-                      onChanged: (value) {
-                        updateAmount(position);
-                      },
-                      // validator: (value) {
-                      //   if (value.isEmpty) {
-                      //     return "Please enter some text";
-                      //   } else {
-                      //     updateName(position);
-                      //   }
-                      // },
-                      decoration: InputDecoration(
-                        labelText: amountList[position].toString(),
-                        labelStyle: subheadStyle,
-                        contentPadding: EdgeInsets.only(
-                            left: 20, bottom: 10.0, top: 10.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                  //),
-                ),
-
-                // Ingredient unit
-                Container(
-                  height: 5.0,
-                  width: 25.0,
-                  margin: EdgeInsets.only(left: 10.0),
-                  child: Text(ingredientList[position].unitName),
-                ),
-
-                // Delete Button
-                Container(
-                  height: 20.0,
-                  width: 20.0,
-                  child: GestureDetector(
-                    child: Icon(Icons.delete),
-                    onTap: () {
-                      _delete(context, ingredientList[position]);
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
+  // Show alert dialog
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
     );
+    showDialog(context: context, builder: (_) => alertDialog);
+  }
+
+  // Delete Recipe from table
+  void _delete(BuildContext context, Ingredient ingredient) async {
+    int result1 = await dbHelper.deleteIngredient(ingredient.id);
+    await dbHelper.deleteIngredientFromRecipe(recipe.id, ingredient.id);
+    if (result1 != 0) {
+      _showSnackBar(context, 'Ingredient Deleted Successfully');
+      updateListView();
+    }
+  }
+
+  // Move back
+  void moveToLastScreen() {
+    Navigator.pop(context, true);
+  }
+
+  // Snack bar
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 2),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  // Navigate to New Recipe
+  void navigateToNewIngredient(Ingredient ingredient, String title) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return NewIngredientScreen(ingredient, title);
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  // Update amount of ingredient
+  void updateAmount(int position) {
+    setState(() {
+      amountList[position] = double.parse(_amountControllers[position].text);
+    });
+  }
+
+  void addIngredientsToCart() {
+    // Add recipes to cart in DB
+    // TODO check here whether recipe id is already in the cart (avoid duplicates)
+    for (int i = 0; i < numOfCheckboxes.length; i++) {
+      bool tempVal = numOfCheckboxes[i];
+      if (tempVal == true) {
+        dbHelper.insertIngredientToRecipe(
+            recipe.id, ingredientList[i].id, amountList[i]);
+      }
+    }
   }
 }
