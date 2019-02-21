@@ -207,6 +207,8 @@ class RecipeScreenState extends State<RecipeScreen> {
             });
           }
 
+          // check how did you solve it if cart screen!
+
           // Find the length difference between ingredients and add appropriate amount of checkboxes
           int lengthDiff = ingredientList.length - numOfCheckboxes.length;
           if (lengthDiff > 0) {
