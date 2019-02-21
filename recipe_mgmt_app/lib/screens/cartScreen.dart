@@ -212,32 +212,24 @@ class CartScreenState extends State<CartScreen> {
     dbFuture.then((database) {
       Future<List<Recipe>> recipeListFuture = dbHelper.getRecipeList();
       recipeListFuture.then((recipeList) {
-        List<int> recipesId = List<int>(recipeList.length);
+        Map<int, bool> checkRecipeId = Map<int, bool>();
+        for (int i = 0; i < recipeList.length; i++) {
+          checkRecipeId[recipeList[i].id] = false;
+        }
 
         // Get recipes in this cart
-        Future<List<Recipe>> recipesInCartListFuture =
-            dbHelper.getRecipeInCartList(cart.id);
+        Future<List<Recipe>> recipesInCartListFuture = dbHelper.getRecipeInCartList(cart.id);
         recipesInCartListFuture.then((recipesInCartList) {
           for (int i = 0; i < recipesInCartList.length; i++) {
-            recipesId[recipesInCartList[i].id - 1] = recipesInCartList[i].id;
+            checkRecipeId[recipesInCartList[i].id] = true;
           }
 
-          // Find the length difference between recipes and add appropriate amount of checkboxes
-          int lengthDiff = recipeList.length - numOfCheckboxes.length;
-          if (lengthDiff > 0) {
-            for (int i = 0; i < lengthDiff; i++) {
-              // check if this index corresponds to recipesInCartList
-              if (recipesId[i] == null) {
-                numOfCheckboxes.add(false);
-              } else {
-                numOfCheckboxes.add(true);
-              }
-            }
-          } else if (lengthDiff < 0) {
-            for (int i = 0; i < lengthDiff; i++) {
-              numOfCheckboxes.removeLast();
-            }
+          // Organize checkboxes
+          for (int i = 0; i < checkRecipeId.length; i++) {
+            bool valueToAdd = checkRecipeId.values.elementAt(i);
+            numOfCheckboxes.add(valueToAdd);
           }
+          
           // Save state
           setState(() {
             this.recipeList = recipeList;
