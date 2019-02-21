@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   final Map<String, dynamic> shoppingList;
@@ -17,6 +18,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   ShoppingListScreenState(this.shoppingList);
 
   List<bool> numOfCheckboxes = List<bool>();
+  DatabaseHelper dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
 
                 // Ingredient name
                 Container(
-                  width: 125.0,
+                  width: 140.0,
                   child: Padding(
                     padding: EdgeInsets.all(5.0),
                     child: Text(
@@ -86,21 +88,48 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
 
                 // Ingredient amount
                 Container(
-                  width: 125.0,
+                  width: 100.0,
                   child: Padding(
                     padding: EdgeInsets.all(5.0),
                     child: Text(
-                      shoppingList.values.elementAt(position).toString(),
+                      getAndCorrectUnits(shoppingList, position),
                       style: titleStyle,
                     ),
                   ),
                 ),
+
+                // Ingredient unit
+                // Container(
+                //   width: 50.0,
+                //   child: Padding(
+                //     padding: EdgeInsets.all(5.0),
+                //     child: Text(
+                //       getIngredientUnit(shoppingList, position),
+                //       style: titleStyle,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  // Correct units
+  String getAndCorrectUnits(Map<String, dynamic> list, int pos) {
+    String originalString = list.values.elementAt(pos).toString();
+    int strLen = originalString.length;
+    String correctedString = originalString.replaceRange(strLen-2, strLen, '');
+    return correctedString;
+  }
+
+  // Get ingredient unit by ingredient ID
+  Future<String> getIngredientUnit(Map<String, dynamic> list, int pos) async {
+    String ingredientTitle = list.keys.elementAt(pos).toString();
+    List<Map<String, dynamic>> ingerdientUnit = await dbHelper.getIngredientUnitByTitle(ingredientTitle);
+    return ingerdientUnit.toString();
   }
 
   // Move back
