@@ -115,6 +115,11 @@ class DatabaseHelper {
     //var result = await db.query(ingredientsTable, orderBy: '$ingredientColName ASC');
     return result;
   }
+  Future<List<Map<String, dynamic>>> getIngredientUnitByTitle(String ingredientTitle) async {
+    Database db = await this.database;
+    List<Map<String, dynamic>>  result = await db.rawQuery('SELECT $ingredientColUnit from $ingredientsTable WHERE $ingredientColName = $ingredientTitle');
+    return result;
+  }
   // Insert
   Future<int> insertIngredient(Ingredient ingredient) async {
     Database db = await this.database;
