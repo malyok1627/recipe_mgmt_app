@@ -20,6 +20,6 @@ By clicking on the Floating Action Button the user will get the possibility to a
 In this screen the user will see all recipes from the database. Check box will determine whether the recipe will be included to the cart.
 By clicking on the Floating Action Button the user will get the possibility to add new recipe.
 
-## recipe screen
+## Recipe screen
 In this screen the user will see all ingredients from the database. Check box will determine whether the ingredient will be included to the recipe.
 By clicking on the Floating Action Button the user will get the possibility to add new ingredient.
