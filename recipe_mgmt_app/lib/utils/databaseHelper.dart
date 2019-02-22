@@ -296,6 +296,13 @@ class DatabaseHelper {
       'WHERE $brTableRIColRecId = $recipeId AND $brTableRIColIngId = $ingredientId');
     return result;
   }
+  // Delete based on recipe
+  Future<int> deleteAllIngredientsFromRecipe(int recipeId) async {
+    var db = await this.database;
+    var result = await db.rawDelete('DELETE FROM $brTableRecipeIngredient '
+      'WHERE $brTableRIColRecId= $recipeId');
+    return result;
+  }
   // Get "Map List" and convert to "Ingredients List"
   Future<List<Ingredient>> getIngredientInRecipeList(int recipeId) async {
     // Get Map List from DB
