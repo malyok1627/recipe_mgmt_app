@@ -1,6 +1,6 @@
 # recipe_mgmt_app
 
-An application, which will help the user to orginaze it's shopping list based on recipes and ingredients in them.
+An application, which will help the user to organize it's shopping list based on recipes and ingredients in them.
 
 The app can be dividen into several screens:
 
