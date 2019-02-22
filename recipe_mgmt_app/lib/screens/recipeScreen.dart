@@ -26,8 +26,9 @@ class RecipeScreenState extends State<RecipeScreen> {
   DatabaseHelper dbHelper = DatabaseHelper();
   List<Ingredient> ingredientList;
   List<bool> numOfCheckboxes = List<bool>();
+  List<String> amountList = List<String>();
   int countIngredients = 0;
-  List<double> amountList;
+  
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
 
@@ -59,15 +60,19 @@ class RecipeScreenState extends State<RecipeScreen> {
               // }
               //}
               //});
-
-              addIngredientsToCart();
-              moveToLastScreen();
-              _showAlertDialog('Status', 'Recipe Saved Successfully');
+              setState(() {
+                if (_formKey.currentState.validate()) {
+                  _save();
+                }
+              });
             },
           ),
         ],
       ),
-      body: getIngredientListView(),
+      body: Form(
+        key: _formKey,
+        child: getIngredientListView(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Ingredient newIngredient = Ingredient('', null);
@@ -93,11 +98,9 @@ class RecipeScreenState extends State<RecipeScreen> {
         _amountControllers.add(new TextEditingController());
 
         return Card(
-          //margin: EdgeInsets.all(10.0),
           color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
-            //padding: EdgeInsets.all(4.0),
             child: Row(
               children: <Widget>[
                 // Checkbox
@@ -126,33 +129,39 @@ class RecipeScreenState extends State<RecipeScreen> {
 
                 Container(
                   width: 80.0,
-                  //height: 20.0,
-                  //child: Padding(
-                    //padding: EdgeInsets.all(1.0),
-                    child: TextField(
-                      controller: _amountControllers[position],
-                      style: subheadStyle,
-                      onChanged: (value) {
+                  child: TextFormField(
+                    controller: _amountControllers[position],
+                    style: subheadStyle,
+                    validator: (value) {
+                      if (numOfCheckboxes[position] == true && value.isEmpty) {
+                        return 'add here';
+                      } else {
                         updateAmount(position);
-                      },
-                      // validator: (value) {
-                      //   if (value.isEmpty) {
-                      //     return "Please enter some text";
-                      //   } else {
-                      //     updateName(position);
-                      //   }
-                      // },
-                      decoration: InputDecoration(
-                        labelText: amountList[position].toString(),
-                        labelStyle: subheadStyle,
-                        contentPadding: EdgeInsets.only(
-                            left: 20, bottom: 10.0, top: 10.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+                      }
+                    },
+                  // child: TextField(
+                  //   controller: _amountControllers[position],
+                  //   style: subheadStyle,
+                  //   onChanged: (value) {
+                  //     updateAmount(position);
+                  //   },
+                    // validator: (value) {
+                    //   if (value.isEmpty) {
+                    //     return "Please enter some text";
+                    //   } else {
+                    //     updateName(position);
+                    //   }
+                    // },
+                    decoration: InputDecoration(
+                      labelText: amountList[position],
+                      labelStyle: subheadStyle,
+                      contentPadding: EdgeInsets.only(
+                          left: 20, bottom: 10.0, top: 10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                  //),
+                  ),
                 ),
 
                 // Ingredient unit
@@ -186,50 +195,49 @@ class RecipeScreenState extends State<RecipeScreen> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Ingredient>> ingredientListFuture =
-          dbHelper.getIngredientList();
+      Future<List<Ingredient>> ingredientListFuture = dbHelper.getIngredientList();
       ingredientListFuture.then((ingredientList) {
-        List<int> ingredientsId = List<int>(ingredientList.length);
+        // Empty checkboxes variabel
+        numOfCheckboxes = List<bool>();
+        amountList = List<String>();
+
+        // Prepare map for checkboxes and amount
+        Map<int, bool> checkIngredientId = Map<int, bool>();
+        Map<int, String> checkIngredientAmount = Map<int, String>();
+        for (int i = 0; i < ingredientList.length; i++) {
+          checkIngredientId[ingredientList[i].id] = false;
+          checkIngredientAmount[ingredientList[i].id] = '';
+        }
 
         // Get ingredients in this recipe
-        Future<List<Ingredient>> ingredientsInRecipeListFuture =
-            dbHelper.getIngredientInRecipeList(recipe.id);
+        Future<List<Ingredient>> ingredientsInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
         ingredientsInRecipeListFuture.then((ingredientsInRecipeList) async {
           for (int i = 0; i < ingredientsInRecipeList.length; i++) {
-            ingredientsId[ingredientsInRecipeList[i].id - 1] =
-                ingredientsInRecipeList[i].id;
-            // Get amount value for each ingredient
-            Future<List<Map<String, dynamic>>> ingredientMapListFuture =
-                dbHelper.getRecipeIngredient(recipe.id,
-                    ingredientsId[ingredientsInRecipeList[i].id - 1]);
-            ingredientMapListFuture.then((ingredientMapList) {
-              amountList[i] = ingredientMapList[0]['amount'];
-            });
+            checkIngredientId[ingredientsInRecipeList[i].id] = true;
+
+            // Get amount for each ingredient
+            List<Map<String, dynamic>> ingredientMapList = await dbHelper.getRecipeIngredient(recipe.id, ingredientsInRecipeList[i].id);
+              // Get ingredient information and store it
+              int ingredientId = ingredientMapList[0]['ingredientId'];
+              String ingredientAmount = ingredientMapList[0]['amount'].toString();
+              checkIngredientAmount[ingredientId] = ingredientAmount;
+          }
+          
+          // Organize checkboxes and amountList
+          for (int i = 0; i < checkIngredientId.length; i++) {
+            // Prepare variables
+            bool boolToAdd = checkIngredientId.values.elementAt(i);
+            String strToAdd =checkIngredientAmount.values.elementAt(i);
+
+            // Add them in order to present on the screen
+            amountList.add(strToAdd);
+            numOfCheckboxes.add(boolToAdd);
           }
 
-          // check how did you solve it if cart screen!
-
-          // Find the length difference between ingredients and add appropriate amount of checkboxes
-          int lengthDiff = ingredientList.length - numOfCheckboxes.length;
-          if (lengthDiff > 0) {
-            for (int i = 0; i < lengthDiff; i++) {
-              // check if this index corresponds to recipesInCartList
-              if (ingredientsId[i] == null) {
-                numOfCheckboxes.add(false);
-              } else {
-                numOfCheckboxes.add(true);
-              }
-            }
-          } else if (lengthDiff < 0) {
-            for (int i = 0; i < lengthDiff; i++) {
-              numOfCheckboxes.removeLast();
-            }
-          }
           // Save state
           setState(() {
             this.ingredientList = ingredientList;
             this.countIngredients = ingredientList.length;
-            this.amountList = List<double>(countIngredients);
           });
         });
       });
@@ -250,6 +258,22 @@ class RecipeScreenState extends State<RecipeScreen> {
       content: Text(message),
     );
     showDialog(context: context, builder: (_) => alertDialog);
+  }
+
+  // Save button pressed
+  void _save() async {
+    // Delete all entries from bridge table
+    deleteRecipesFromCart();
+    // Add marked recipes to bridge table
+    addIngredientsToRecipe();
+    // Move to last screen
+    moveToLastScreen();
+    _showAlertDialog('Status', 'Recipe Saved Successfully');
+  }
+
+  // Delete all Ingredients from Recipe
+  void deleteRecipesFromCart() {
+    dbHelper.deleteAllIngredientsFromRecipe(recipe.id);
   }
 
   // Delete Recipe from table
@@ -290,18 +314,21 @@ class RecipeScreenState extends State<RecipeScreen> {
   // Update amount of ingredient
   void updateAmount(int position) {
     setState(() {
-      amountList[position] = double.parse(_amountControllers[position].text);
+      amountList[position] = _amountControllers[position].text;
     });
   }
 
-  void addIngredientsToCart() {
+  void addIngredientsToRecipe() async {
     // Add recipes to cart in DB
-    // TODO check here whether recipe id is already in the cart (avoid duplicates)
     for (int i = 0; i < numOfCheckboxes.length; i++) {
       bool tempVal = numOfCheckboxes[i];
       if (tempVal == true) {
-        dbHelper.insertIngredientToRecipe(
-            recipe.id, ingredientList[i].id, amountList[i]);
+        try {
+          double parsedNum =double.parse(amountList[i]);
+          await dbHelper.insertIngredientToRecipe(recipe.id, ingredientList[i].id, parsedNum);
+        } catch (error) {
+          _showAlertDialog('Status', 'Please enter a number into amount field!');
+        }       
       }
     }
   }
