@@ -1,16 +1,25 @@
 # recipe_mgmt_app
 
-A new Flutter project.
+An application, which will help the user to orginaze it's shopping list based on recipes and ingredients in them.
 
-## Getting Started
+The app can be dividen into several screens:
 
-This project is a starting point for a Flutter application.
+- list of carts
+- cart screen (list of recipes)
+- recipe screen (list of ingredients)
 
-A few resources to get you started if this is your first Flutter project:
+- add new cart 
+- add new recipe
+- add new ingredient
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+## List of carts
+In this screen the user will be able to see all the available carts. 
+By clicking on the Floating Action Button the user will get the possibility to add new cart.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+## Cart screen
+In this screen the user will see all recipes from the database. Check box will determine whether the recipe will be included to the cart.
+By clicking on the Floating Action Button the user will get the possibility to add new recipe.
+
+## recipe screen
+In this screen the user will see all ingredients from the database. Check box will determine whether the ingredient will be included to the recipe.
+By clicking on the Floating Action Button the user will get the possibility to add new ingredient.
