@@ -47,7 +47,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
-            tooltip: 'Save Cart',
+            tooltip: 'Save Ingredient',
             onPressed: () {
               setState(() {
                 if (_formKey.currentState.validate()) {
@@ -71,7 +71,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                 style: titleText,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Please enter some text";
+                    return "Please enter ingredient name";
                   } else {
                     updateName();
                   }
