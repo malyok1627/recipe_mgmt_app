@@ -212,6 +212,9 @@ class CartScreenState extends State<CartScreen> {
     dbFuture.then((database) {
       Future<List<Recipe>> recipeListFuture = dbHelper.getRecipeList();
       recipeListFuture.then((recipeList) {
+        // Empty checkboxes variable
+        numOfCheckboxes = List<bool>();
+        // Prepare map for checkboxes
         Map<int, bool> checkRecipeId = Map<int, bool>();
         for (int i = 0; i < recipeList.length; i++) {
           checkRecipeId[recipeList[i].id] = false;
@@ -273,8 +276,8 @@ class CartScreenState extends State<CartScreen> {
   }
 
   // Delete all Recipes from Cart
-  void deleteRecipesFromCart() {
-    dbHelper.deleteAllRecipesFromCart(cart.id);
+  void deleteRecipesFromCart() async {
+    await dbHelper.deleteAllRecipesFromCart(cart.id);
   }
 
   // Navigate to New Recipe
