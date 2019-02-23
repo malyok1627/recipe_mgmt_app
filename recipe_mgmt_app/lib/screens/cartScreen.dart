@@ -72,7 +72,7 @@ class CartScreenState extends State<CartScreen> {
               ),
               elevation: 10.0,
               onPressed: () async {
-                Map<String, dynamic> shoppingList = await getShoppingList();
+                List shoppingList = await getShoppingList();
                 navigateToShoppingList(shoppingList);
               },
             ),
@@ -171,8 +171,9 @@ class CartScreenState extends State<CartScreen> {
   }
 
   // Display grocery list
-  Future<Map<String, dynamic>> getShoppingList() async {
+  Future<List> getShoppingList() async {
     Map<String, dynamic> groceryList = Map<String, dynamic>();
+    Map<String, String> groceryListUnits = Map<String, String>();
 
     // Get all recipes in cart
     List<Recipe> recipeInCartList = await dbHelper.getRecipeInCartList(cart.id);
@@ -187,6 +188,7 @@ class CartScreenState extends State<CartScreen> {
         // Get ingredient info
         int ingredientId = ingredientInRecipeList[j].id;
         String ingredientName = ingredientInRecipeList[j].name;
+        String ingredientUnit =ingredientInRecipeList[j].unitName;
 
         // Get amount value for each ingredient
         List<Map<String, dynamic>> ingredientMap = await dbHelper.getRecipeIngredient(recipeId, ingredientId);
@@ -199,10 +201,11 @@ class CartScreenState extends State<CartScreen> {
         } // Otherwise add it to the list
         else {
           groceryList[ingredientName] = amount;
+          groceryListUnits[ingredientName] = ingredientUnit;
         }        
       }
     }
-    return groceryList;
+    return [groceryList, groceryListUnits];
   }
 
 
@@ -303,7 +306,7 @@ class CartScreenState extends State<CartScreen> {
   }
 
   // Navigate to Shopping List
-  void navigateToShoppingList(Map<String, dynamic> list) async {
+  void navigateToShoppingList(List list) async {
     bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ShoppingListScreen(list);
     }));
