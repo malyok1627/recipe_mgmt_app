@@ -39,57 +39,56 @@ class CartScreenState extends State<CartScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          appBarTitle,
-          style: TextStyle(fontWeight: FontWeight.bold),  
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.save),
-            tooltip: 'Save Cart',
-            onPressed: () {
-              _save();
-            },
+        appBar: AppBar(
+          title: Text(
+            appBarTitle,
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: getRecipeListView(),
-          ),
-
-          // ShowGroceryList button
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: RaisedButton(
-              color: Theme.of(context).primaryColorDark,
-              textColor: Theme.of(context).selectedRowColor,
-              child: Text(
-                "Show Grocery List",
-                textScaleFactor: 1.1,
-              ),
-              elevation: 10.0,
-              onPressed: () async {
-                List shoppingList = await getShoppingList();
-                navigateToShoppingList(shoppingList);
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.save),
+              tooltip: 'Save Cart',
+              onPressed: () {
+                _save();
               },
             ),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Recipe newRecipe = Recipe('', null);
-          navigateToNewRecipe(newRecipe, 'Add Recipe');
-        },
-        tooltip: 'Add New Recipe',
-        child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColorDark,
-        foregroundColor: Theme.of(context).selectedRowColor,
-      )
-    );
+          ],
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: getRecipeListView(),
+            ),
+
+            // ShowGroceryList button
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: RaisedButton(
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).selectedRowColor,
+                child: Text(
+                  "Show Grocery List",
+                  textScaleFactor: 1.1,
+                ),
+                elevation: 10.0,
+                onPressed: () async {
+                  List shoppingList = await getShoppingList();
+                  navigateToShoppingList(shoppingList);
+                },
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Recipe newRecipe = Recipe('', null);
+            navigateToNewRecipe(newRecipe, 'Add Recipe');
+          },
+          tooltip: 'Add New Recipe',
+          child: Icon(Icons.add),
+          backgroundColor: Theme.of(context).primaryColorDark,
+          foregroundColor: Theme.of(context).selectedRowColor,
+        ));
   }
 
   ListView getRecipeListView() {
@@ -99,71 +98,51 @@ class CartScreenState extends State<CartScreen> {
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-          //margin: EdgeInsets.all(10.0),
           color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
-          child: Container(
-            //padding: EdgeInsets.all(4.0),
-            child: Row(
-              children: <Widget>[
-                // Checkbox
-                Container(
-                  width: 50.0,
-                  height: 40.0,
-                  child: Checkbox(
-                    value: numOfCheckboxes[position],
-                    onChanged: (bool value) {
-                      boxStateChange(value, position);
-                    },
-                  ),
-                ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              // Checkbox
+              Checkbox(
+                value: numOfCheckboxes[position],
+                onChanged: (bool value) {
+                  boxStateChange(value, position);
+                },
+              ),
 
-                // Recipe name
-                Container(
-                  width: 130.0,
-                  height: 40.0,
-                  //child: Padding(
-                    //padding: EdgeInsets.all(5.0),
-                    child: FlatButton(
-                      child: Text(
-                        recipeList[position].name,
-                        style: titleStyle,
-                      ),
-                      onPressed: () {
-                        navigateToRecipe(
-                            this.recipeList[position], 'Edit Recipe');
-                      },
-                    ),
-                  //),
+              // Recipe name
+              FlatButton(
+                child: Text(
+                  recipeList[position].name,
+                  style: titleStyle,
                 ),
+                onPressed: () {
+                  navigateToRecipe(this.recipeList[position], 'Edit Recipe');
+                },
+              ),
 
-                // Recipe category
-                Container(
-                  width: 90.0,
-                  height: 40.0,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      recipeList[position].category,
-                      style: titleStyle,
-                    ),
-                  ),
-                ),
+              Spacer(),
 
-                // Delete Button
-                Container(
-                  margin: EdgeInsets.all(5.0),
-                  width: 30.0,
-                  height: 40.0,
-                  child: GestureDetector(
-                    child: Icon(Icons.delete),
-                    onTap: () {
-                      _delete(context, recipeList[position]);
-                    },
-                  ),
+              // Recipe category
+              Text(
+                recipeList[position].category,
+                style: titleStyle,
+              ),
+
+              Spacer(),
+
+              // Delete Button
+              Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: GestureDetector(
+                  child: Icon(Icons.delete),
+                  onTap: () {
+                    _delete(context, recipeList[position]);
+                  },
                 ),
-              ],
-            ),
+              ),              
+            ],
           ),
         );
       },
@@ -177,21 +156,22 @@ class CartScreenState extends State<CartScreen> {
 
     // Get all recipes in cart
     List<Recipe> recipeInCartList = await dbHelper.getRecipeInCartList(cart.id);
-    
+
     for (int i = 0; i < recipeInCartList.length; i++) {
       int recipeId = recipeInCartList[i].id;
 
       // Get all ingredients in recipe
-      List<Ingredient> ingredientInRecipeList = await dbHelper.getIngredientInRecipeList(recipeId);
+      List<Ingredient> ingredientInRecipeList =
+          await dbHelper.getIngredientInRecipeList(recipeId);
       for (int j = 0; j < ingredientInRecipeList.length; j++) {
-
         // Get ingredient info
         int ingredientId = ingredientInRecipeList[j].id;
         String ingredientName = ingredientInRecipeList[j].name;
-        String ingredientUnit =ingredientInRecipeList[j].unitName;
+        String ingredientUnit = ingredientInRecipeList[j].unitName;
 
         // Get amount value for each ingredient
-        List<Map<String, dynamic>> ingredientMap = await dbHelper.getRecipeIngredient(recipeId, ingredientId);
+        List<Map<String, dynamic>> ingredientMap =
+            await dbHelper.getRecipeIngredient(recipeId, ingredientId);
 
         double amount = ingredientMap[0]['amount'];
 
@@ -202,12 +182,11 @@ class CartScreenState extends State<CartScreen> {
         else {
           groceryList[ingredientName] = amount;
           groceryListUnits[ingredientName] = ingredientUnit;
-        }        
+        }
       }
     }
     return [groceryList, groceryListUnits];
   }
-
 
   // Update List View
   void updateListView() {
@@ -224,7 +203,8 @@ class CartScreenState extends State<CartScreen> {
         }
 
         // Get recipes in this cart
-        Future<List<Recipe>> recipesInCartListFuture = dbHelper.getRecipeInCartList(cart.id);
+        Future<List<Recipe>> recipesInCartListFuture =
+            dbHelper.getRecipeInCartList(cart.id);
         recipesInCartListFuture.then((recipesInCartList) {
           for (int i = 0; i < recipesInCartList.length; i++) {
             checkRecipeId[recipesInCartList[i].id] = true;
@@ -235,7 +215,7 @@ class CartScreenState extends State<CartScreen> {
             bool valueToAdd = checkRecipeId.values.elementAt(i);
             numOfCheckboxes.add(valueToAdd);
           }
-          
+
           // Save state
           setState(() {
             this.recipeList = recipeList;
@@ -285,7 +265,8 @@ class CartScreenState extends State<CartScreen> {
 
   // Navigate to New Recipe
   void navigateToNewRecipe(Recipe recipe, String title) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return NewRecipeScreen(recipe, title);
     }));
 
@@ -296,7 +277,8 @@ class CartScreenState extends State<CartScreen> {
 
   // Navigate to Existing Recipe
   void navigateToRecipe(Recipe recipe, String title) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return RecipeScreen(recipe, title);
     }));
 
@@ -307,7 +289,8 @@ class CartScreenState extends State<CartScreen> {
 
   // Navigate to Shopping List
   void navigateToShoppingList(List list) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ShoppingListScreen(list);
     }));
 
@@ -342,7 +325,7 @@ class CartScreenState extends State<CartScreen> {
     final snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: 2),
-      );
+    );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 }
