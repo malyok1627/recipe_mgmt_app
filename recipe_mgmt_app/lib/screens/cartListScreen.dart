@@ -46,85 +46,102 @@ class CartListScreenState extends State<CartListScreen> {
   }
 
   ListView getCartListView() {
-		return ListView.builder(
-			itemCount: countCarts,
-			itemBuilder: (BuildContext context, int position) {
-				return Card(
-					color: Theme.of(context).selectedRowColor,
-          //margin: EdgeInsets.all(10.0),
-					elevation: 4.0,
-					child: ListTile(
-						title: Text(
-              this.cartList[position].name, 
-              style: Theme.of(context).textTheme.title,
-            ),
-						trailing: GestureDetector(
-							child: Icon(Icons.delete, color: Colors.black,),
-							onTap: () {
-								_delete(context, cartList[position]);
-							},
-						),
-        		onTap: () {
-							navigateToCart(this.cartList[position], 'Edit Cart');
-						},
-					),
-				);
-			},
+    return ListView.builder(
+      itemCount: countCarts,
+      itemBuilder: (BuildContext context, int position) {
+        return Card(
+            color: Theme.of(context).selectedRowColor,
+            elevation: 4.0,
+            child: Row(
+              children: <Widget>[
+                // Cart name
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                    child: Text(
+                      this.cartList[position].name,
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    onTap: () {
+                      navigateToCart(this.cartList[position], 'Edit Cart');
+                    },
+                  ),
+                ),
+
+                Spacer(),
+
+                // Delete icon
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.black,
+                    ),
+                    onTap: () {
+                      _delete(context, cartList[position]);
+                    },
+                  ),
+                )
+              ],
+            ));
+      },
     );
   }
 
   // Update List View
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
-		dbFuture.then((database) {
-			Future<List<Cart>> cartListFuture = dbHelper.getCartList();
-			cartListFuture.then((cartList) {
-				setState(() {
-				  this.cartList = cartList;
-				  this.countCarts = cartList.length;
-				});
-			});
-		});
+    dbFuture.then((database) {
+      Future<List<Cart>> cartListFuture = dbHelper.getCartList();
+      cartListFuture.then((cartList) {
+        setState(() {
+          this.cartList = cartList;
+          this.countCarts = cartList.length;
+        });
+      });
+    });
   }
 
-  // Delete Cart 
+  // Delete Cart
   void _delete(BuildContext context, Cart cart) async {
     int result = await dbHelper.deleteCart(cart.id);
-		if (result != 0) {
-			_showSnackBar(context, 'Cart Deleted Successfully');
-			updateListView();
-		}
+    if (result != 0) {
+      _showSnackBar(context, 'Cart Deleted Successfully');
+      updateListView();
+    }
   }
 
   // Snack bar
   void _showSnackBar(BuildContext context, String message) {
-		final snackBar = SnackBar(
+    final snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: 2),
     );
-		Scaffold.of(context).showSnackBar(snackBar);
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 
   // Navigate to New Cart
   void navigateToNewCart(Cart newCart, String title) async {
-	  bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-		  return NewCartScreen(newCart, title);
-	  }));
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return NewCartScreen(newCart, title);
+    }));
 
-	  if (result == true) {
-	  	updateListView();
-	  }
+    if (result == true) {
+      updateListView();
+    }
   }
 
   // Navigate to Existing Cart
   void navigateToCart(Cart cart, String title) async {
-	  bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
-		  return CartScreen(cart, title);
-	  }));
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return CartScreen(cart, title);
+    }));
 
-	  if (result == true) {
-	  	updateListView();
-	  }
+    if (result == true) {
+      updateListView();
+    }
   }
-
 }
