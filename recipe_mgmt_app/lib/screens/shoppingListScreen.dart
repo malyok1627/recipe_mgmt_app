@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
 
 class ShoppingListScreen extends StatefulWidget {
-  final Map<String, dynamic> shoppingList;
+  final List shoppingList;
 
   ShoppingListScreen(this.shoppingList);
 
@@ -13,7 +13,9 @@ class ShoppingListScreen extends StatefulWidget {
 }
 
 class ShoppingListScreenState extends State<ShoppingListScreen> {
-  final Map<String, dynamic> shoppingList;
+  // [0] - ingredient name and amount
+  // [1] - ingredient name and unit
+  final List shoppingList;
 
   ShoppingListScreenState(this.shoppingList);
 
@@ -46,71 +48,48 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   int getAmountOfCheckboxes() {
-    return shoppingList.length;
+    return shoppingList[0].length;
   }
 
   ListView getShoppingListView() {
     TextStyle titleStyle = Theme.of(context).textTheme.title;
     
     return ListView.builder(
-      itemCount: shoppingList.length,
+      itemCount: shoppingList[0].length,
       itemBuilder: (BuildContext context, int position) {
         numOfCheckboxes.add(false);
         return Card(
           color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
-          child: Container(
-            padding: EdgeInsets.all(4.0),
-            child: Row(
-              children: <Widget>[
-                // Checkbox
-                Container(
-                  width: 50.0,
-                  child: Checkbox(
-                    value: numOfCheckboxes[position],
-                    onChanged: (bool val) {
-                      boxStateChange(val, position);
-                    },
-                  ),
-                ),
-
-                // Ingredient name
-                Container(
-                  width: 140.0,
-                  child: Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Text(
-                      shoppingList.keys.elementAt(position),
-                      style: titleStyle,
-                    ),
-                  ),
-                ),
-
-                // Ingredient amount
-                Container(
-                  width: 100.0,
-                  child: Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Text(
-                      getAndCorrectUnits(shoppingList, position),
-                      style: titleStyle,
-                    ),
-                  ),
-                ),
-
-                // Ingredient unit
-                // Container(
-                //   width: 50.0,
-                //   child: Padding(
-                //     padding: EdgeInsets.all(5.0),
-                //     child: Text(
-                //       getIngredientUnit(shoppingList, position),
-                //       style: titleStyle,
-                //     ),
-                //   ),
-                // ),
-              ],
+          child: ListTile(
+            // Checkbox
+            leading: Checkbox(
+              value: numOfCheckboxes[position],
+              onChanged: (bool val) {
+                boxStateChange(val, position);
+              },
             ),
+            // Ingredient name
+            title: Text(
+              shoppingList[0].keys.elementAt(position),
+              style: titleStyle,
+            ),
+            trailing: Container(
+              child: Column(
+                children: <Widget>[
+                  // Ingredient amount
+                  Text(
+                    getAndCorrectUnits(shoppingList[0], position),
+                    style: titleStyle,
+                  ),
+                  // Ingredeint unit
+                  Text(
+                    shoppingList[1].values.elementAt(position),
+                    style: titleStyle,
+                  ),
+                ],
+              ),
+            ),           
           ),
         );
       },
@@ -123,13 +102,6 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
     int strLen = originalString.length;
     String correctedString = originalString.replaceRange(strLen-2, strLen, '');
     return correctedString;
-  }
-
-  // Get ingredient unit by ingredient ID
-  Future<String> getIngredientUnit(Map<String, dynamic> list, int pos) async {
-    String ingredientTitle = list.keys.elementAt(pos).toString();
-    List<Map<String, dynamic>> ingerdientUnit = await dbHelper.getIngredientUnitByTitle(ingredientTitle);
-    return ingerdientUnit.toString();
   }
 
   // Move back
