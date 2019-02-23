@@ -61,36 +61,68 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
         return Card(
           color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
-          child: ListTile(
-            // Checkbox
-            leading: Checkbox(
-              value: numOfCheckboxes[position],
-              onChanged: (bool val) {
-                boxStateChange(val, position);
-              },
-            ),
-            // Ingredient name
-            title: Text(
-              shoppingList[0].keys.elementAt(position),
-              style: titleStyle,
-            ),
-            trailing: Container(
-              child: Column(
-                children: <Widget>[
-                  // Ingredient amount
-                  Text(
-                    getAndCorrectUnits(shoppingList[0], position),
-                    style: titleStyle,
-                  ),
-                  // Ingredeint unit
-                  Text(
-                    shoppingList[1].values.elementAt(position),
-                    style: titleStyle,
-                  ),
-                ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              // Checkbox
+              Checkbox(
+                value: numOfCheckboxes[position],
+                onChanged: (bool val) {
+                  boxStateChange(val, position);
+                },
               ),
-            ),           
-          ),
+              // Ingredient name
+              Text(
+                shoppingList[0].keys.elementAt(position),
+                style: titleStyle,
+              ),
+              Spacer(),
+              // Ingredient amount
+              Text(
+                getAndCorrectUnits(shoppingList[0], position),
+                style: titleStyle,
+              ),
+              // Ingredeint unit
+              Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Text(
+                  shoppingList[1].values.elementAt(position),
+                  style: titleStyle,
+                ),
+              )              
+            ],
+          )
+          
+          // ListTile(
+          //   // Checkbox
+          //   leading: Checkbox(
+          //     value: numOfCheckboxes[position],
+          //     onChanged: (bool val) {
+          //       boxStateChange(val, position);
+          //     },
+          //   ),
+          //   // Ingredient name
+          //   title: Text(
+          //     shoppingList[0].keys.elementAt(position),
+          //     style: titleStyle,
+          //   ),
+          //   trailing: Container(
+          //     child: Column(
+          //       children: <Widget>[
+          //         // Ingredient amount
+          //         Text(
+          //           getAndCorrectUnits(shoppingList[0], position),
+          //           style: titleStyle,
+          //         ),
+          //         // Ingredeint unit
+          //         Text(
+          //           shoppingList[1].values.elementAt(position),
+          //           style: titleStyle,
+          //         ),
+          //       ],
+          //     ),
+          //   ),           
+          // ),
         );
       },
     );
