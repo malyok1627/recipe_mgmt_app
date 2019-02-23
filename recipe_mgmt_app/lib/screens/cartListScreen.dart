@@ -3,6 +3,7 @@ import 'package:recipe_mgmt_app/models/cart.dart';
 import 'package:recipe_mgmt_app/screens/cartScreen.dart';
 import 'package:recipe_mgmt_app/screens/newCartScreen.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CartListScreen extends StatefulWidget {
@@ -28,8 +29,19 @@ class CartListScreenState extends State<CartListScreen> {
       appBar: AppBar(
         title: Text(
           'Shopping List Manager',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          //style: TextStyle(fontWeight: FontWeight.bold),
+          //style: Theme.of(context).textTheme.title,
+          //style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(getIconBasedOnTheme()),
+            tooltip: 'Change Theme',
+            onPressed: () {
+              changeBrightness();
+            },
+          ),
+        ],
       ),
       body: getCartListView(),
       floatingActionButton: FloatingActionButton(
@@ -39,7 +51,7 @@ class CartListScreenState extends State<CartListScreen> {
         },
         tooltip: 'Add New Cart',
         child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColorDark,
+        backgroundColor: Theme.of(context).indicatorColor,
         foregroundColor: Theme.of(context).selectedRowColor,
       ),
     );
@@ -50,43 +62,59 @@ class CartListScreenState extends State<CartListScreen> {
       itemCount: countCarts,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-            color: Theme.of(context).selectedRowColor,
-            elevation: 4.0,
-            child: Row(
-              children: <Widget>[
-                // Cart name
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: GestureDetector(
-                    child: Text(
-                      this.cartList[position].name,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    onTap: () {
-                      navigateToCart(this.cartList[position], 'Edit Cart');
-                    },
+          //color: Theme.of(context).primaryColor,
+          elevation: 4.0,
+          child: Row(
+            children: <Widget>[
+              // Cart name
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  child: Text(
+                    this.cartList[position].name,
+                    style: Theme.of(context).textTheme.title,
                   ),
+                  onTap: () {
+                    navigateToCart(this.cartList[position], 'Edit Cart');
+                  },
                 ),
+              ),
 
-                Spacer(),
+              Spacer(),
 
-                // Delete icon
-                Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: GestureDetector(
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.black,
-                    ),
-                    onTap: () {
-                      _delete(context, cartList[position]);
-                    },
+              // Delete icon
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: GestureDetector(
+                  child: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).selectedRowColor
                   ),
-                )
-              ],
-            ));
+                  onTap: () {
+                    _delete(context, cartList[position]);
+                  },
+                ),
+              )
+            ],
+          )
+        );
       },
     );
+  }
+
+  IconData getIconBasedOnTheme() {
+    if (Theme.of(context).brightness == Brightness.dark) {
+      return Icons.brightness_5;
+    } else {
+      return Icons.brightness_3;
+    }
+  }
+
+  void changeBrightness() {
+    DynamicTheme.of(context).setBrightness(
+        Theme.of(context).brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark);
   }
 
   // Update List View

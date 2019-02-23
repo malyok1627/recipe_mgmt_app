@@ -73,7 +73,7 @@ class RecipeScreenState extends State<RecipeScreen> {
         },
         tooltip: "Add Ingredient",
         child: Icon(Icons.add),
-        backgroundColor: Theme.of(context).primaryColorDark,
+        backgroundColor: Theme.of(context).indicatorColor,
         foregroundColor: Theme.of(context).selectedRowColor,
       ),
     );
@@ -91,7 +91,7 @@ class RecipeScreenState extends State<RecipeScreen> {
         _amountControllers.add(new TextEditingController());
 
         return Card(
-          color: Theme.of(context).selectedRowColor,
+          //color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
             child: Row(
@@ -163,7 +163,10 @@ class RecipeScreenState extends State<RecipeScreen> {
                 Padding(
                   padding: EdgeInsets.only(right: 10.0),
                   child: GestureDetector(
-                    child: Icon(Icons.delete),
+                    child: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).selectedRowColor
+                    ),
                     onTap: () {
                       _delete(context, ingredientList[position]);
                     },

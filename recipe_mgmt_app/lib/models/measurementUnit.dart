@@ -12,7 +12,7 @@ class MeasurementUnit {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 20) {
+    if (newName.length <= 30) {
       this._name = newName;
     }
   }

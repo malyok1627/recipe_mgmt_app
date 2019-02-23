@@ -64,8 +64,7 @@ class CartScreenState extends State<CartScreen> {
             Padding(
               padding: EdgeInsets.all(10.0),
               child: RaisedButton(
-                color: Theme.of(context).primaryColorDark,
-                textColor: Theme.of(context).selectedRowColor,
+                color: Theme.of(context).indicatorColor,
                 child: Text(
                   "Show Grocery List",
                   textScaleFactor: 1.1,
@@ -86,7 +85,7 @@ class CartScreenState extends State<CartScreen> {
           },
           tooltip: 'Add New Recipe',
           child: Icon(Icons.add),
-          backgroundColor: Theme.of(context).primaryColorDark,
+          backgroundColor: Theme.of(context).indicatorColor,
           foregroundColor: Theme.of(context).selectedRowColor,
         ));
   }
@@ -98,7 +97,7 @@ class CartScreenState extends State<CartScreen> {
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-          color: Theme.of(context).selectedRowColor,
+          //color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -136,7 +135,10 @@ class CartScreenState extends State<CartScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 10.0),
                 child: GestureDetector(
-                  child: Icon(Icons.delete),
+                  child: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).selectedRowColor,
+                  ),
                   onTap: () {
                     _delete(context, recipeList[position]);
                   },

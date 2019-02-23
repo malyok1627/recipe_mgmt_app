@@ -15,7 +15,7 @@ class Recipe {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 25) {
+    if (newName.length <= 40) {
       this._name = newName;
     }
   }
