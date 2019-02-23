@@ -56,9 +56,9 @@ class NewCartScreenState extends State<NewCartScreen> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            // Cart name - TextField
+            // Enter cart name
             Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
@@ -73,7 +73,7 @@ class NewCartScreenState extends State<NewCartScreen> {
                   labelText: "Cart title",
                   labelStyle: titleText,
                   contentPadding:
-                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                      EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
