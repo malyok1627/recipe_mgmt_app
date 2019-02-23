@@ -28,7 +28,7 @@ class RecipeScreenState extends State<RecipeScreen> {
   List<bool> numOfCheckboxes = List<bool>();
   List<String> amountList = List<String>();
   int countIngredients = 0;
-  
+
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
 
@@ -53,13 +53,6 @@ class RecipeScreenState extends State<RecipeScreen> {
             icon: const Icon(Icons.save),
             tooltip: 'Save Recipe',
             onPressed: () {
-              //setState(() {
-              //if (_formKey.currentState.validate()) {
-              // for (int i=0; i<amountList.length; i++) {
-              //   print(amountList[i]);
-              // }
-              //}
-              //});
               setState(() {
                 if (_formKey.currentState.validate()) {
                   _save();
@@ -103,86 +96,79 @@ class RecipeScreenState extends State<RecipeScreen> {
           child: Container(
             child: Row(
               children: <Widget>[
-                // Checkbox
-                Padding(
-                  padding: EdgeInsets.all(1.0),
-                  child: Checkbox(
-                    value: numOfCheckboxes[position],
-                    onChanged: (bool value) {
-                      boxStateChange(value, position);
-                    },
-                  ),
-                ),
-
-                // Ingredient Name
                 Container(
-                  width: 120.0,
-                  height: 40.0,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      ingredientList[position].name,
-                      style: titleStyle,
-                    ),
-                  ),
-                ),
-
-                Container(
-                  width: 80.0,
-                  child: TextFormField(
-                    controller: _amountControllers[position],
-                    style: subheadStyle,
-                    validator: (value) {
-                      if (numOfCheckboxes[position] == true && value.isEmpty) {
-                        return 'add here';
-                      } else {
-                        updateAmount(position);
-                      }
-                    },
-                  // child: TextField(
-                  //   controller: _amountControllers[position],
-                  //   style: subheadStyle,
-                  //   onChanged: (value) {
-                  //     updateAmount(position);
-                  //   },
-                    // validator: (value) {
-                    //   if (value.isEmpty) {
-                    //     return "Please enter some text";
-                    //   } else {
-                    //     updateName(position);
-                    //   }
-                    // },
-                    decoration: InputDecoration(
-                      labelText: amountList[position],
-                      labelStyle: subheadStyle,
-                      contentPadding: EdgeInsets.only(
-                          left: 20, bottom: 10.0, top: 10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                  child: Row(
+                    children: <Widget>[
+                      // Checkbox
+                      Checkbox(
+                        value: numOfCheckboxes[position],
+                        onChanged: (bool value) {
+                          boxStateChange(value, position);
+                        },
                       ),
-                    ),
+
+                      // Ingredient Name
+                      Text(
+                        ingredientList[position].name,
+                        style: titleStyle,
+                      ),
+                    ],
                   ),
                 ),
 
-                // Ingredient unit
+                Spacer(),
+
                 Container(
-                  height: 5.0,
-                  width: 20.0,
-                  margin: EdgeInsets.only(left: 10.0),
-                  child: Text(ingredientList[position].unitName),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        width: 80.0,
+                        child: TextFormField(
+                          controller: _amountControllers[position],
+                          style: subheadStyle,
+                          validator: (value) {
+                            if (numOfCheckboxes[position] == true &&
+                                value.isEmpty) {
+                              return 'add here';
+                            } else {
+                              updateAmount(position);
+                            }
+                          },
+                          decoration: InputDecoration(
+                            labelText: amountList[position],
+                            labelStyle: subheadStyle,
+                            contentPadding: EdgeInsets.only(
+                                left: 10, bottom: 10.0, top: 10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // Ingredient unit
+                      Container(
+                        width: 30.0,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                          child: Text(ingredientList[position].unitName),
+                        ),
+                      ),
+                                            
+                    ],
+                  ),
                 ),
 
                 // Delete Button
-                Container(
-                  height: 20.0,
-                  width: 20.0,
+                Padding(
+                  padding: EdgeInsets.only(right: 10.0),
                   child: GestureDetector(
                     child: Icon(Icons.delete),
                     onTap: () {
                       _delete(context, ingredientList[position]);
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -195,7 +181,8 @@ class RecipeScreenState extends State<RecipeScreen> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Ingredient>> ingredientListFuture = dbHelper.getIngredientList();
+      Future<List<Ingredient>> ingredientListFuture =
+          dbHelper.getIngredientList();
       ingredientListFuture.then((ingredientList) {
         // Empty checkboxes variabel
         numOfCheckboxes = List<bool>();
@@ -210,24 +197,26 @@ class RecipeScreenState extends State<RecipeScreen> {
         }
 
         // Get ingredients in this recipe
-        Future<List<Ingredient>> ingredientsInRecipeListFuture = dbHelper.getIngredientInRecipeList(recipe.id);
+        Future<List<Ingredient>> ingredientsInRecipeListFuture =
+            dbHelper.getIngredientInRecipeList(recipe.id);
         ingredientsInRecipeListFuture.then((ingredientsInRecipeList) async {
           for (int i = 0; i < ingredientsInRecipeList.length; i++) {
             checkIngredientId[ingredientsInRecipeList[i].id] = true;
 
             // Get amount for each ingredient
-            List<Map<String, dynamic>> ingredientMapList = await dbHelper.getRecipeIngredient(recipe.id, ingredientsInRecipeList[i].id);
-              // Get ingredient information and store it
-              int ingredientId = ingredientMapList[0]['ingredientId'];
-              String ingredientAmount = ingredientMapList[0]['amount'].toString();
-              checkIngredientAmount[ingredientId] = ingredientAmount;
+            List<Map<String, dynamic>> ingredientMapList = await dbHelper
+                .getRecipeIngredient(recipe.id, ingredientsInRecipeList[i].id);
+            // Get ingredient information and store it
+            int ingredientId = ingredientMapList[0]['ingredientId'];
+            String ingredientAmount = ingredientMapList[0]['amount'].toString();
+            checkIngredientAmount[ingredientId] = ingredientAmount;
           }
-          
+
           // Organize checkboxes and amountList
           for (int i = 0; i < checkIngredientId.length; i++) {
             // Prepare variables
             bool boolToAdd = checkIngredientId.values.elementAt(i);
-            String strToAdd =checkIngredientAmount.values.elementAt(i);
+            String strToAdd = checkIngredientAmount.values.elementAt(i);
 
             // Add them in order to present on the screen
             amountList.add(strToAdd);
@@ -302,7 +291,8 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Navigate to New Recipe
   void navigateToNewIngredient(Ingredient ingredient, String title) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return NewIngredientScreen(ingredient, title);
     }));
 
@@ -324,11 +314,13 @@ class RecipeScreenState extends State<RecipeScreen> {
       bool tempVal = numOfCheckboxes[i];
       if (tempVal == true) {
         try {
-          double parsedNum =double.parse(amountList[i]);
-          await dbHelper.insertIngredientToRecipe(recipe.id, ingredientList[i].id, parsedNum);
+          double parsedNum = double.parse(amountList[i]);
+          await dbHelper.insertIngredientToRecipe(
+              recipe.id, ingredientList[i].id, parsedNum);
         } catch (error) {
-          _showAlertDialog('Status', 'Please enter a number into amount field!');
-        }       
+          _showAlertDialog(
+              'Status', 'Please enter a number into amount field!');
+        }
       }
     }
   }
