@@ -108,7 +108,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                   padding: EdgeInsets.all(10.0),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      hint: new Text("category"),
+                      hint: new Text('category'),
                       value: recipe.category,
                       onChanged: (value) {
                         setState(() {
@@ -121,6 +121,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                           child: Text(dropDownStringItem),
                         );
                       }).toList(),
+                      style: titleText,
                     ),
                   ),
                 ),

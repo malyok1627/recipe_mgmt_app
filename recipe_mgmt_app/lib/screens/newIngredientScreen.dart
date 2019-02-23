@@ -64,8 +64,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
           children: <Widget>[
             // Ingredient name - TextField
             Padding(
-              padding: EdgeInsets.only(
-                  left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
@@ -80,7 +79,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                   labelText: "Ingredient name",
                   labelStyle: titleText,
                   contentPadding:
-                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                      EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -92,30 +91,34 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
               children: <Widget>[
                 // Additional text
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.only(left: 15.0, right: 5.0),
                   child: Text(
                     'Measurement unit:',
                     style: titleText
                   ),
                 ),
 
-                // Category drop down menu
+                // Unit drop down menu
+                // TODO check if category was chosen
                 Padding(
                   padding: EdgeInsets.all(10.0),
-                  child: DropdownButton(
-                    items: _units.map((String dropDownStringItem) {
-                      return DropdownMenuItem<String>(
-                        value: dropDownStringItem,
-                        child: Text(dropDownStringItem),
-                      );
-                    }).toList(),
-                    style: titleText,
-                    value: ingredient.unitName,
-                    onChanged: (value) {
-                      setState(() {
-                        ingredient.unitName = value;
-                      });
-                    },
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      hint: Text('unit'),
+                      value: ingredient.unitName,
+                      onChanged: (value) {
+                        setState(() {
+                          ingredient.unitName = value;
+                        });
+                      },
+                      items: _units.map((String dropDownStringItem) {
+                        return DropdownMenuItem<String>(
+                          value: dropDownStringItem,
+                          child: Text(dropDownStringItem),
+                        );
+                      }).toList(),
+                      style: titleText,                     
+                    ),
                   ),
                 ),
               ],
