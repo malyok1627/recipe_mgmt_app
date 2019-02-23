@@ -67,10 +67,9 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            // Recipe name - TextField
+            // Enter recipe name
             Padding(
-              padding: EdgeInsets.only(
-                  left: 10.0, right: 10.0, top: 20.0, bottom: 10.0),
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
               child: TextFormField(
                 controller: nameController,
                 style: titleText,
@@ -84,8 +83,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 decoration: InputDecoration(
                   labelText: "Recipe title",
                   labelStyle: titleText,
-                  contentPadding:
-                      EdgeInsets.only(left: 20, bottom: 15.0, top: 15.0),
+                  contentPadding: EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -97,8 +95,11 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
               children: <Widget>[
                 // Additional text
                 Padding(
-                  padding: EdgeInsets.only(left: 10.0, right: 5.0),
-                  child: Text('Recipe category:', style: titleText),
+                  padding: EdgeInsets.only(left: 15.0, right: 5.0),
+                  child: Text(
+                    'Recipe category:',
+                    style: titleText
+                  ),
                 ),
 
                 // Category drop down menu
@@ -123,26 +124,6 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                     ),
                   ),
                 ),
-                
-
-                // Padding(
-                //   padding: EdgeInsets.all(10.0),
-                //   child: DropdownButton(
-                //     items: _categories.map((String dropDownStringItem) {
-                //       return DropdownMenuItem<String>(
-                //         value: dropDownStringItem,
-                //         child: Text(dropDownStringItem),
-                //       );
-                //     }).toList(),
-                //     style: titleText,
-                //     value: recipe.category,
-                //     onChanged: (value) {
-                //       setState(() {
-                //         recipe.category = value;
-                //       });
-                //     },
-                //   ),
-                // ),
               ],
             ),
           ],
