@@ -129,7 +129,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                           validator: (value) {
                             if (numOfCheckboxes[position] == true &&
                                 value.isEmpty) {
-                              return 'add here';
+                              return 'add value';
                             } else {
                               updateAmount(position);
                             }

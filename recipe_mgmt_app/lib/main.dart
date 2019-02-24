@@ -45,6 +45,8 @@ class RecipeOrganizerApp extends StatelessWidget {
           indicatorColor: Color.fromRGBO(249, 170, 51, 1),
           // Checkbox color
           toggleableActiveColor: Color.fromRGBO(249, 170, 51, 1),
+          // TextField border color
+          accentColor: Color.fromRGBO(249, 170, 51, 1)
         )
       : ThemeData.light().copyWith(
           textTheme: ThemeData.light().textTheme.apply(
@@ -58,10 +60,8 @@ class RecipeOrganizerApp extends StatelessWidget {
           indicatorColor: Color.fromRGBO(249, 170, 51, 1),
           // Checkbox color
           toggleableActiveColor: Colors.black,
-
-          //primaryColorDark: Colors.brown   
-          // Scaffold color       
-          //scaffoldBackgroundColor: Color.fromRGBO(249, 170, 51, 1),
+          // TextField border color
+          accentColor: Color.fromRGBO(249, 170, 51, 1)
         );
   }
 }

@@ -84,7 +84,7 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
               ),
               // Ingredeint unit
               Padding(
-                padding: EdgeInsets.only(right: 10.0),
+                padding: EdgeInsets.only(right: 10.0, left: 5.0),
                 child: Text(
                   shoppingList[1].values.elementAt(position),
                   style: titleStyle,

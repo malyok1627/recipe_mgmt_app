@@ -54,33 +54,29 @@ class NewCartScreenState extends State<NewCartScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Column(
-          children: <Widget>[
-            // Enter cart name
-            Padding(
-              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
-              child: TextFormField(
-                controller: nameController,
-                style: titleText,
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "Please enter cart title";
-                  } else {
-                    updateName();
-                  }
-                },
-                decoration: InputDecoration(
-                  labelText: "Cart title",
-                  labelStyle: titleText,
-                  contentPadding:
-                      EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
+        child: 
+          Padding(
+            padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
+            child: TextFormField(
+              controller: nameController,
+              style: titleText,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return "Please enter cart title";
+                } else {
+                  updateName();
+                }
+              },
+            decoration: InputDecoration(
+              labelText: "Cart title",
+              labelStyle: titleText,
+              contentPadding:
+                  EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
