@@ -45,7 +45,7 @@ class RecipeScreenState extends State<RecipeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          appBarTitle,
+          appBarTitle + ': ' + recipe.name,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
@@ -68,7 +68,7 @@ class RecipeScreenState extends State<RecipeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Ingredient newIngredient = Ingredient('', null);
+          Ingredient newIngredient = Ingredient('', 'g');
           navigateToNewIngredient(newIngredient, 'Add Ingredient');
         },
         tooltip: "Add Ingredient",
@@ -91,7 +91,6 @@ class RecipeScreenState extends State<RecipeScreen> {
         _amountControllers.add(new TextEditingController());
 
         return Card(
-          //color: Theme.of(context).selectedRowColor,
           elevation: 4.0,
           child: Container(
             child: Row(
@@ -129,7 +128,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                           validator: (value) {
                             if (numOfCheckboxes[position] == true &&
                                 value.isEmpty) {
-                              return 'add value';
+                              return '    add value';
                             } else {
                               updateAmount(position);
                             }
@@ -137,8 +136,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                           decoration: InputDecoration(
                             labelText: amountList[position],
                             labelStyle: subheadStyle,
-                            contentPadding: EdgeInsets.only(
-                                left: 10, bottom: 10.0, top: 10.0),
+                            contentPadding: EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -236,10 +234,17 @@ class RecipeScreenState extends State<RecipeScreen> {
     });
   }
 
-  // Monitor checkbox changes
+  // Update checkbox changes
   void boxStateChange(bool value, int position) {
     setState(() {
       numOfCheckboxes[position] = value;
+    });
+  }
+
+  // Update amount of ingredient
+  void updateAmount(int position) {
+    setState(() {
+      amountList[position] = _amountControllers[position].text;
     });
   }
 
@@ -260,7 +265,6 @@ class RecipeScreenState extends State<RecipeScreen> {
     addIngredientsToRecipe();
     // Move to last screen
     moveToLastScreen();
-    _showAlertDialog('Status', 'Recipe Saved Successfully');
   }
 
   // Delete all Ingredients from Recipe
@@ -304,12 +308,7 @@ class RecipeScreenState extends State<RecipeScreen> {
     }
   }
 
-  // Update amount of ingredient
-  void updateAmount(int position) {
-    setState(() {
-      amountList[position] = _amountControllers[position].text;
-    });
-  }
+  
 
   void addIngredientsToRecipe() async {
     // Add recipes to cart in DB
@@ -322,7 +321,7 @@ class RecipeScreenState extends State<RecipeScreen> {
               recipe.id, ingredientList[i].id, parsedNum);
         } catch (error) {
           _showAlertDialog(
-              'Status', 'Please enter a number into amount field!');
+              'Status', 'Please enter a value into amount field!');
         }
       }
     }

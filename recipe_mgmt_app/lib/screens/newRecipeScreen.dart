@@ -19,11 +19,11 @@ class NewRecipeScreen extends StatefulWidget {
 class NewRecipeScreenState extends State<NewRecipeScreen> {
   // Possible categories for recipe
   static var _categories = [
+    'breakfast',
     'dessert',
+    'main dish',
     'salad',
     'soup',
-    'main dish',
-    'breakfast'
   ];
 
   String appBarTitle;
@@ -103,12 +103,11 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 ),
 
                 // Category drop down menu
-                // TODO check if category was chosen
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                      hint: new Text('category'),
+                      hint: Text('category'),
                       value: recipe.category,
                       onChanged: (value) {
                         setState(() {
@@ -145,9 +144,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
     // Add to DB table
     int result = await dbHelper.insertRecipe(recipe);
 
-    if (result != 0) {
-      _showAlertDialog('Status', 'Recipe Saved Successfully');
-    } else {
+    if (result == 0) {
       _showAlertDialog('Status', 'Error Saving Recipe');
     }
   }

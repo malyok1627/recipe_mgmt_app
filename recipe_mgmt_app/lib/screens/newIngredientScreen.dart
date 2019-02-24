@@ -70,13 +70,13 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                 style: titleText,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return "Please enter ingredient name";
+                    return "Please enter ingredient title";
                   } else {
                     updateName();
                   }
                 },
                 decoration: InputDecoration(
-                  labelText: "Ingredient name",
+                  labelText: "Ingredient title",
                   labelStyle: titleText,
                   contentPadding:
                       EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
@@ -99,7 +99,6 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                 ),
 
                 // Unit drop down menu
-                // TODO check if category was chosen
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: DropdownButtonHideUnderline(
@@ -141,10 +140,8 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
     // Add to DB table
     int result = await dbHelper.insertIngredient(ingredient);
 
-    if (result != 0) {
-      _showAlertDialog('Status', 'Ingredient Saved Successfully');
-    } else {
-      _showAlertDialog('Status', 'Ingredient Saving Cart');
+    if (result == 0) {
+      _showAlertDialog('Status', 'Error Saving Ingredient');
     }
   }
 

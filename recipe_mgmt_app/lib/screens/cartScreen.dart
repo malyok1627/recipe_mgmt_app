@@ -41,7 +41,7 @@ class CartScreenState extends State<CartScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            appBarTitle,
+            appBarTitle + ': ' + cart.name,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: <Widget>[
@@ -80,7 +80,7 @@ class CartScreenState extends State<CartScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Recipe newRecipe = Recipe('', null);
+            Recipe newRecipe = Recipe('', 'breakfast');
             navigateToNewRecipe(newRecipe, 'Add Recipe');
           },
           tooltip: 'Add New Recipe',
@@ -97,56 +97,73 @@ class CartScreenState extends State<CartScreen> {
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-          //color: Theme.of(context).selectedRowColor,
-          elevation: 4.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              // Checkbox
-              Checkbox(
-                value: numOfCheckboxes[position],
-                onChanged: (bool value) {
-                  boxStateChange(value, position);
-                },
-              ),
+            //color: Theme.of(context).selectedRowColor,
+            elevation: 4.0,
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          // Checkbox
+                          Checkbox(
+                            value: numOfCheckboxes[position],
+                            onChanged: (bool value) {
+                              boxStateChange(value, position);
+                            },
+                          ),
 
-              // Recipe name
-              FlatButton(
-                child: Text(
-                  recipeList[position].name,
-                  style: titleStyle,
+                          // Recipe name
+                          InkWell(
+                            child: Text(
+                              recipeList[position].name,
+                              style: titleStyle,
+                            ),
+                            onTap: () {
+                              navigateToRecipe(
+                                  this.recipeList[position], 'Edit');
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    Spacer(),
+
+                    // Recipe category
+                    Text(
+                      recipeList[position].category,
+                      style: titleStyle,
+                    ),
+
+                    Spacer(),
+
+                    // Delete Button
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).selectedRowColor,
+                        ),
+                        onTap: () {
+                          _delete(context, recipeList[position]);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () {
-                  navigateToRecipe(this.recipeList[position], 'Edit Recipe');
-                },
-              ),
-
-              Spacer(),
-
-              // Recipe category
-              Text(
-                recipeList[position].category,
-                style: titleStyle,
-              ),
-
-              Spacer(),
-
-              // Delete Button
-              Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: GestureDetector(
-                  child: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).selectedRowColor,
-                  ),
-                  onTap: () {
-                    _delete(context, recipeList[position]);
-                  },
-                ),
-              ),              
-            ],
-          ),
-        );
+                // Add an image here
+                // Container(
+                //   height: 100.0,
+                //   child: Image.network('https://letsbuildthatapp-videos.s3-us-west-2.amazonaws.com/04782e30-d72a-4917-9d7a-c862226e0a93')
+                // )
+                
+              ],
+            ));
       },
     );
   }
@@ -319,7 +336,8 @@ class CartScreenState extends State<CartScreen> {
     addRecipesToCart();
     // Move to last screen
     moveToLastScreen();
-    _showAlertDialog('Status', 'Cart Saved Successfully');
+    //_showSnackBar(context, 'Recipe Saved Successfully');
+    //_showAlertDialog('Status', 'Cart Saved Successfully');
   }
 
   // Snack bar

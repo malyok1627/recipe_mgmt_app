@@ -75,7 +75,7 @@ class CartListScreenState extends State<CartListScreen> {
                     style: Theme.of(context).textTheme.title,
                   ),
                   onTap: () {
-                    navigateToCart(this.cartList[position], 'Edit Cart');
+                    navigateToCart(this.cartList[position], 'Edit');
                   },
                 ),
               ),
