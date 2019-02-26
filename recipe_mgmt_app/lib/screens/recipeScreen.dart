@@ -62,9 +62,32 @@ class RecipeScreenState extends State<RecipeScreen> {
           ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: getIngredientListView(),
+      body: Column(
+        children: <Widget>[
+          // Add an image here
+          DecoratedBox(
+            decoration: BoxDecoration(
+                //borderRadius: BorderRadius.circular(10.0),
+                ),
+          ),
+          Container(
+            child: Container(
+              child: ClipRRect(
+                borderRadius: new BorderRadius.circular(5.0),
+                child: Image.network(
+                  'https://i0.wp.com/www.theeasyvegan.org/wp-content/uploads/2019/01/Fish-and-Chips-Base-Thumb-2.jpg?resize=768%2C432&ssl=1',
+                ),
+              ),
+            ),
+            padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
+          ),
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: getIngredientListView(),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -120,6 +143,7 @@ class RecipeScreenState extends State<RecipeScreen> {
                 Container(
                   child: Row(
                     children: <Widget>[
+                      // Ingredient amount
                       Container(
                         width: 80.0,
                         child: TextFormField(
@@ -136,7 +160,8 @@ class RecipeScreenState extends State<RecipeScreen> {
                           decoration: InputDecoration(
                             labelText: amountList[position],
                             labelStyle: subheadStyle,
-                            contentPadding: EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
+                            contentPadding: EdgeInsets.only(
+                                left: 10, bottom: 10.0, top: 10.0),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -152,7 +177,6 @@ class RecipeScreenState extends State<RecipeScreen> {
                           child: Text(ingredientList[position].unitName),
                         ),
                       ),
-                                            
                     ],
                   ),
                 ),
@@ -161,10 +185,8 @@ class RecipeScreenState extends State<RecipeScreen> {
                 Padding(
                   padding: EdgeInsets.only(right: 10.0),
                   child: GestureDetector(
-                    child: Icon(
-                      Icons.delete,
-                      color: Theme.of(context).selectedRowColor
-                    ),
+                    child: Icon(Icons.delete,
+                        color: Theme.of(context).selectedRowColor),
                     onTap: () {
                       _delete(context, ingredientList[position]);
                     },
@@ -308,8 +330,6 @@ class RecipeScreenState extends State<RecipeScreen> {
     }
   }
 
-  
-
   void addIngredientsToRecipe() async {
     // Add recipes to cart in DB
     for (int i = 0; i < numOfCheckboxes.length; i++) {
@@ -320,8 +340,7 @@ class RecipeScreenState extends State<RecipeScreen> {
           await dbHelper.insertIngredientToRecipe(
               recipe.id, ingredientList[i].id, parsedNum);
         } catch (error) {
-          _showAlertDialog(
-              'Status', 'Please enter a value into amount field!');
+          _showAlertDialog('Status', 'Please enter a value into amount field!');
         }
       }
     }
