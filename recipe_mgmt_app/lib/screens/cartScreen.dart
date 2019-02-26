@@ -97,73 +97,63 @@ class CartScreenState extends State<CartScreen> {
       itemCount: countRecipes,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-            //color: Theme.of(context).selectedRowColor,
-            elevation: 4.0,
-            child: Column(
-              children: <Widget>[
-                Row(
+          //color: Theme.of(context).selectedRowColor,
+          elevation: 4.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          // Checkbox
-                          Checkbox(
-                            value: numOfCheckboxes[position],
-                            onChanged: (bool value) {
-                              boxStateChange(value, position);
-                            },
-                          ),
-
-                          // Recipe name
-                          InkWell(
-                            child: Text(
-                              recipeList[position].name,
-                              style: titleStyle,
-                            ),
-                            onTap: () {
-                              navigateToRecipe(
-                                  this.recipeList[position], 'Edit');
-                            },
-                          ),
-                        ],
-                      ),
+                    // Checkbox
+                    Checkbox(
+                      value: numOfCheckboxes[position],
+                      onChanged: (bool value) {
+                        boxStateChange(value, position);
+                      },
                     ),
 
-                    Spacer(),
-
-                    // Recipe category
-                    Text(
-                      recipeList[position].category,
-                      style: titleStyle,
-                    ),
-
-                    Spacer(),
-
-                    // Delete Button
-                    Padding(
-                      padding: EdgeInsets.only(right: 10.0),
-                      child: GestureDetector(
-                        child: Icon(
-                          Icons.delete,
-                          color: Theme.of(context).selectedRowColor,
-                        ),
-                        onTap: () {
-                          _delete(context, recipeList[position]);
-                        },
+                    // Recipe name
+                    InkWell(
+                      child: Text(
+                        recipeList[position].name,
+                        style: titleStyle,
                       ),
+                      onTap: () {
+                        navigateToRecipe(this.recipeList[position], 'Edit');
+                      },
                     ),
                   ],
                 ),
-                // Add an image here
-                // Container(
-                //   height: 100.0,
-                //   child: Image.network('https://letsbuildthatapp-videos.s3-us-west-2.amazonaws.com/04782e30-d72a-4917-9d7a-c862226e0a93')
-                // )
-                
-              ],
-            ));
+              ),
+
+              Spacer(),
+
+              // Recipe category
+              Text(
+                recipeList[position].category,
+                style: titleStyle,
+              ),
+
+              Spacer(),
+
+              // Delete Button
+              Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: GestureDetector(
+                  child: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).selectedRowColor,
+                  ),
+                  onTap: () {
+                    _delete(context, recipeList[position]);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
