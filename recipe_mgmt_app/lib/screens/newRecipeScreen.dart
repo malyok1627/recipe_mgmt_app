@@ -3,6 +3,7 @@ import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
 import 'package:recipe_mgmt_app/screens/dropDownFormField.dart';
 import 'package:recipe_mgmt_app/utils/databaseHelper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String appBarTitle;
@@ -28,6 +29,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
 
   String appBarTitle;
   Recipe recipe;
+  dynamic _image;
 
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
@@ -123,13 +125,36 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                       style: titleText,
                     ),
                   ),
-                ),
+                )
               ],
             ),
+            Center(
+              child: _image == null
+              ? Text('No image selected...')
+              : Image.file(_image),
+            )
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          getImage();
+        },
+        tooltip: "Add Recipe Photo",
+        child: Icon(Icons.photo),
+        backgroundColor: Theme.of(context).indicatorColor,
+        foregroundColor: Theme.of(context).selectedRowColor,
+      ),
     );
+  }
+
+  // Handle selected image
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = image;
+    });
   }
 
   // Update name of Cart object
