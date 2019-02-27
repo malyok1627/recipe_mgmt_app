@@ -131,7 +131,11 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
             Center(
               child: _image == null
               ? Text('No image selected...')
-              : Image.file(_image),
+              : Container(
+                width: 200,
+                height: 200,
+                child: Image.file(_image),
+              ),              
             )
           ],
         ),
@@ -150,7 +154,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
 
   // Handle selected image
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       _image = image;
