@@ -67,13 +67,13 @@ class RecipeScreenState extends State<RecipeScreen> {
           // Add an image here
           DecoratedBox(
             decoration: BoxDecoration(
-                //borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(10.0),
                 ),
           ),
           Container(
             child: Container(
               child: ClipRRect(
-                borderRadius: new BorderRadius.circular(5.0),
+                borderRadius: new BorderRadius.circular(10.0),
                 child: Image.network(
                   'https://i0.wp.com/www.theeasyvegan.org/wp-content/uploads/2019/01/Fish-and-Chips-Base-Thumb-2.jpg?resize=768%2C432&ssl=1',
                 ),

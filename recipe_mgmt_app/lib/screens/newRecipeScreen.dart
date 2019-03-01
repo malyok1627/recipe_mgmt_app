@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:recipe_mgmt_app/models/ingredient.dart';
 import 'package:recipe_mgmt_app/models/recipe.dart';
@@ -30,6 +32,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
   String appBarTitle;
   Recipe recipe;
   dynamic _image;
+  dynamic base64 = const Base64Codec() ;
 
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
@@ -128,23 +131,25 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 )
               ],
             ),
-            Center(
-              child: _image == null
-              ? Text('No image selected...')
-              : Container(
-                width: 200,
-                height: 200,
-                child: Image.file(_image),
-              ),              
-            )
+            Container(
+              child: Container(
+                child: _image == null 
+                ? Text('Recipe image will be displayed here...')
+                : ClipRRect(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  child: Image.file(_image),
+                ),
+                padding: EdgeInsets.all(10.0),
+              ),
+            ),       
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          getImage();
+          getImageFromGallery();
         },
-        tooltip: "Add Recipe Photo",
+        tooltip: "Add recipe picture",
         child: Icon(Icons.photo),
         backgroundColor: Theme.of(context).indicatorColor,
         foregroundColor: Theme.of(context).selectedRowColor,
@@ -153,13 +158,21 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
   }
 
   // Handle selected image
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
+  Future getImageFromGallery() async {
+    var image = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      //maxWidth: 600,
+      //maxHeight: 400,
+    );
+    
+    
     setState(() {
       _image = image;
     });
+
   }
+
+
 
   // Update name of Cart object
   void updateName() {
