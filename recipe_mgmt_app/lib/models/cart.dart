@@ -13,9 +13,7 @@ class Cart {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 40) {
-      this._name = newName;
-    }
+    this._name = newName;
   }
 
   // Convert a node object into a map object

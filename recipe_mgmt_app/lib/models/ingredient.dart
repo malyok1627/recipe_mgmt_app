@@ -15,9 +15,7 @@ class Ingredient {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 40) {
-      this._name = newName;
-    }
+    this._name = newName;
   }
   set unitName(String newUnitName) {
     this._unitName = newUnitName;

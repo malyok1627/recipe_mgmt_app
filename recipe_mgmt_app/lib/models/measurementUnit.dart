@@ -12,9 +12,7 @@ class MeasurementUnit {
 
   // Setters
   set name(String newName) {
-    if (newName.length <= 30) {
-      this._name = newName;
-    }
+    this._name = newName;
   }
 
   // Convert a Node object into a Map object
