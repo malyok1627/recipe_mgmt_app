@@ -65,22 +65,22 @@ class RecipeScreenState extends State<RecipeScreen> {
       body: Column(
         children: <Widget>[
           // Add an image here
-          DecoratedBox(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                ),
-          ),
-          Container(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: new BorderRadius.circular(10.0),
-                child: Image.network(
-                  'https://i0.wp.com/www.theeasyvegan.org/wp-content/uploads/2019/01/Fish-and-Chips-Base-Thumb-2.jpg?resize=768%2C432&ssl=1',
-                ),
-              ),
-            ),
-            padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
-          ),
+          // DecoratedBox(
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(10.0),
+          //   ),
+          // ),
+          // Container(
+          //   child: Container(
+          //     child: ClipRRect(
+          //       borderRadius: new BorderRadius.circular(10.0),
+          //       child: Image.network(
+          //         'https://i0.wp.com/www.theeasyvegan.org/wp-content/uploads/2019/01/Fish-and-Chips-Base-Thumb-2.jpg?resize=768%2C432&ssl=1',
+          //       ),
+          //     ),
+          //   ),
+          //   padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
+          // ),
           Expanded(
             child: Form(
               key: _formKey,
@@ -130,10 +130,17 @@ class RecipeScreenState extends State<RecipeScreen> {
                       ),
 
                       // Ingredient Name
-                      Text(
-                        ingredientList[position].name,
-                        style: titleStyle,
-                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width-210,
+                        child: Text(
+                          ingredientList[position].name,
+                          style: titleStyle,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                      )
+                      
                     ],
                   ),
                 ),
@@ -158,8 +165,6 @@ class RecipeScreenState extends State<RecipeScreen> {
                             }
                           },
                           decoration: InputDecoration(
-                            //labelText: getAndCorrectUnits(amountList[position]),
-                            //labelStyle: subheadStyle,
                             contentPadding: EdgeInsets.only(
                                 left: 10, bottom: 10.0, top: 10.0),
                             border: OutlineInputBorder(
@@ -249,7 +254,8 @@ class RecipeScreenState extends State<RecipeScreen> {
             _amountControllers.add(new TextEditingController());
             if (strToAdd.isNotEmpty) {
               int strLen = strToAdd.length;
-              _amountControllers[i].text = strToAdd.replaceRange(strLen-2, strLen, '');
+              _amountControllers[i].text =
+                  strToAdd.replaceRange(strLen - 2, strLen, '');
             }
           }
 
@@ -274,11 +280,11 @@ class RecipeScreenState extends State<RecipeScreen> {
   String getAndCorrectUnits(String unit) {
     if (unit.isNotEmpty) {
       int strLen = unit.length;
-      String correctedString = unit.replaceRange(strLen-2, strLen, '');
+      String correctedString = unit.replaceRange(strLen - 2, strLen, '');
       return correctedString;
     } else {
       return '';
-    }    
+    }
   }
 
   // Update amount of ingredient

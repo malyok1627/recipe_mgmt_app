@@ -62,42 +62,46 @@ class CartListScreenState extends State<CartListScreen> {
       itemCount: countCarts,
       itemBuilder: (BuildContext context, int position) {
         return Card(
-          //color: Theme.of(context).primaryColor,
-          elevation: 4.0,
-          child: Row(
-            children: <Widget>[
-              // Cart name
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  child: Text(
-                    this.cartList[position].name,
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  onTap: () {
-                    navigateToCart(this.cartList[position], 'Edit');
-                  },
+            //color: Theme.of(context).primaryColor,
+            elevation: 4.0,
+            child: Row(
+              children: <Widget>[
+                // Cart name
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width-80,
+                    child: GestureDetector(
+                      child: Text(
+                        this.cartList[position].name,
+                        style: Theme.of(context).textTheme.title,
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        softWrap: false,
+                      ),
+                      onTap: () {
+                        navigateToCart(this.cartList[position], 'Edit');
+                      },
+                    ),
+                  )
+                  
                 ),
-              ),
 
-              Spacer(),
+                Spacer(),
 
-              // Delete icon
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: GestureDetector(
-                  child: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).selectedRowColor
+                // Delete icon
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: GestureDetector(
+                    child: Icon(Icons.delete,
+                        color: Theme.of(context).selectedRowColor),
+                    onTap: () {
+                      _delete(context, cartList[position]);
+                    },
                   ),
-                  onTap: () {
-                    _delete(context, cartList[position]);
-                  },
-                ),
-              )
-            ],
-          )
-        );
+                )
+              ],
+            ));
       },
     );
   }

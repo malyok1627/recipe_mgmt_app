@@ -85,6 +85,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                     updateName();
                   }
                 },
+                maxLength: 25,
                 decoration: InputDecoration(
                   labelText: "Recipe title",
                   labelStyle: titleText,

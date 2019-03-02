@@ -115,15 +115,22 @@ class CartScreenState extends State<CartScreen> {
                     ),
 
                     // Recipe name
-                    InkWell(
-                      child: Text(
-                        recipeList[position].name,
-                        style: titleStyle,
+                    Container(
+                      width: MediaQuery.of(context).size.width-200,
+                      child: InkWell(
+                        child: Text(
+                          recipeList[position].name,
+                          style: titleStyle,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                        onTap: () {
+                          navigateToRecipe(this.recipeList[position], 'Edit');
+                        },
                       ),
-                      onTap: () {
-                        navigateToRecipe(this.recipeList[position], 'Edit');
-                      },
-                    ),
+                    )
+                    
                   ],
                 ),
               ),

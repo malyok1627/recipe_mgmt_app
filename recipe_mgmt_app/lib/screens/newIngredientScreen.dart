@@ -62,7 +62,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            // Ingredient name - TextField
+            // Ingredient title
             Padding(
               padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
               child: TextFormField(
@@ -75,6 +75,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                     updateName();
                   }
                 },
+                maxLength: 25,
                 decoration: InputDecoration(
                   labelText: "Ingredient title",
                   labelStyle: titleText,

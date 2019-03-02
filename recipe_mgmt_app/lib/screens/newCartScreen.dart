@@ -55,6 +55,7 @@ class NewCartScreenState extends State<NewCartScreen> {
       body: Form(
         key: _formKey,
         child: 
+          // Cart title
           Padding(
             padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
             child: TextFormField(
@@ -67,6 +68,7 @@ class NewCartScreenState extends State<NewCartScreen> {
                   updateName();
                 }
               },
+              maxLength: 35,
             decoration: InputDecoration(
               labelText: "Cart title",
               labelStyle: titleText,
@@ -94,9 +96,7 @@ class NewCartScreenState extends State<NewCartScreen> {
     // Add to DB table
     int result = await dbHelper.insertCart(cart);
 
-    if (result != 0) {
-      _showAlertDialog('Status', 'Cart Saved Successfully');
-    } else {
+    if (result == 0) {
       _showAlertDialog('Status', 'Problem Saving Cart');
     }
   }
