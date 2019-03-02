@@ -111,7 +111,7 @@ class RecipeScreenState extends State<RecipeScreen> {
       itemCount: countIngredients,
       itemBuilder: (BuildContext context, int position) {
         // Add an amountController
-        _amountControllers.add(new TextEditingController());
+        //_amountControllers.add(new TextEditingController());
 
         return Card(
           elevation: 4.0,
@@ -158,8 +158,8 @@ class RecipeScreenState extends State<RecipeScreen> {
                             }
                           },
                           decoration: InputDecoration(
-                            labelText: amountList[position],
-                            labelStyle: subheadStyle,
+                            //labelText: getAndCorrectUnits(amountList[position]),
+                            //labelStyle: subheadStyle,
                             contentPadding: EdgeInsets.only(
                                 left: 10, bottom: 10.0, top: 10.0),
                             border: OutlineInputBorder(
@@ -244,6 +244,13 @@ class RecipeScreenState extends State<RecipeScreen> {
             // Add them in order to present on the screen
             amountList.add(strToAdd);
             numOfCheckboxes.add(boolToAdd);
+
+            // Add TextController
+            _amountControllers.add(new TextEditingController());
+            if (strToAdd.isNotEmpty) {
+              int strLen = strToAdd.length;
+              _amountControllers[i].text = strToAdd.replaceRange(strLen-2, strLen, '');
+            }
           }
 
           // Save state
@@ -261,6 +268,17 @@ class RecipeScreenState extends State<RecipeScreen> {
     setState(() {
       numOfCheckboxes[position] = value;
     });
+  }
+
+  // Get units in int
+  String getAndCorrectUnits(String unit) {
+    if (unit.isNotEmpty) {
+      int strLen = unit.length;
+      String correctedString = unit.replaceRange(strLen-2, strLen, '');
+      return correctedString;
+    } else {
+      return '';
+    }    
   }
 
   // Update amount of ingredient
