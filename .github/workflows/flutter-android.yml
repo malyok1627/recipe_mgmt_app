@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image:  google/dart:latest
+      image:  ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -17,9 +17,16 @@ jobs:
     - uses: subosito/flutter-action@v1
       with:
         channel: 'stable'
-    - run: flutter pub get
+    - name: Upgrade flutter
+      run: |
+        flutter channel master
+        flutter upgrade
+    - name: Install packages
       working-directory: dart_project
-    - run: flutter test
+      run: flutter pub get
+    - name: Run test
       working-directory: dart_project
-    - run: flutter build apk
+      run: flutter test
+    - name: Build APK
       working-directory: dart_project
+      run: flutter build apk
