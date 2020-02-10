@@ -5,10 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    container:
-      image:  ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
