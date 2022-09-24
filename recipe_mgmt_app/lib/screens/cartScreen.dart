@@ -63,17 +63,18 @@ class CartScreenState extends State<CartScreen> {
             // ShowGroceryList button
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: RaisedButton(
-                color: Theme.of(context).indicatorColor,
+              child: ElevatedButton(
                 child: Text(
                   "Show Grocery List",
                   textScaleFactor: 1.1,
                 ),
-                elevation: 10.0,
                 onPressed: () async {
                   List shoppingList = await getShoppingList();
                   navigateToShoppingList(shoppingList);
                 },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).indicatorColor,
+                    elevation: 10.0),
               ),
             )
           ],
