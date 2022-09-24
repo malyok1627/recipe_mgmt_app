@@ -68,24 +68,22 @@ class CartListScreenState extends State<CartListScreen> {
               children: <Widget>[
                 // Cart name
                 Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width-80,
-                    child: GestureDetector(
-                      child: Text(
-                        this.cartList[position].name,
-                        style: Theme.of(context).textTheme.title,
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
+                    padding: EdgeInsets.all(10.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width - 80,
+                      child: GestureDetector(
+                        child: Text(
+                          this.cartList[position].name,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                        onTap: () {
+                          navigateToCart(this.cartList[position], 'Edit');
+                        },
                       ),
-                      onTap: () {
-                        navigateToCart(this.cartList[position], 'Edit');
-                      },
-                    ),
-                  )
-                  
-                ),
+                    )),
 
                 Spacer(),
 
