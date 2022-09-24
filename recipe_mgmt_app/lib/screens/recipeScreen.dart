@@ -105,7 +105,7 @@ class RecipeScreenState extends State<RecipeScreen> {
   // Get List of ingredients
   ListView getIngredientListView() {
     TextStyle subheadStyle = Theme.of(context).textTheme.subhead;
-    TextStyle titleStyle = Theme.of(context).textTheme.title;
+    TextStyle titleStyle = Theme.of(context).textTheme.titleMedium;
 
     return ListView.builder(
       itemCount: countIngredients,
@@ -131,7 +131,7 @@ class RecipeScreenState extends State<RecipeScreen> {
 
                       // Ingredient Name
                       Container(
-                        width: MediaQuery.of(context).size.width-210,
+                        width: MediaQuery.of(context).size.width - 210,
                         child: Text(
                           ingredientList[position].name,
                           style: titleStyle,
@@ -140,7 +140,6 @@ class RecipeScreenState extends State<RecipeScreen> {
                           softWrap: false,
                         ),
                       )
-                      
                     ],
                   ),
                 ),

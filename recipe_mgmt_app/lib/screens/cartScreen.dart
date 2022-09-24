@@ -91,7 +91,7 @@ class CartScreenState extends State<CartScreen> {
   }
 
   ListView getRecipeListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.title;
+    TextStyle titleStyle = Theme.of(context).textTheme.titleMedium;
 
     return ListView.builder(
       itemCount: countRecipes,
@@ -116,7 +116,7 @@ class CartScreenState extends State<CartScreen> {
 
                     // Recipe name
                     Container(
-                      width: MediaQuery.of(context).size.width-200,
+                      width: MediaQuery.of(context).size.width - 200,
                       child: InkWell(
                         child: Text(
                           recipeList[position].name,
@@ -130,7 +130,6 @@ class CartScreenState extends State<CartScreen> {
                         },
                       ),
                     )
-                    
                   ],
                 ),
               ),

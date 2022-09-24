@@ -36,7 +36,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
+    TextStyle titleText = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
       appBar: AppBar(
@@ -93,10 +93,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                 // Additional text
                 Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 5.0),
-                  child: Text(
-                    'Measurement unit:',
-                    style: titleText
-                  ),
+                  child: Text('Measurement unit:', style: titleText),
                 ),
 
                 // Unit drop down menu
@@ -117,7 +114,7 @@ class NewIngredientScreenState extends State<NewIngredientScreen> {
                           child: Text(dropDownStringItem),
                         );
                       }).toList(),
-                      style: titleText,                     
+                      style: titleText,
                     ),
                   ),
                 ),

@@ -25,26 +25,25 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
+    TextStyle titleText = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'My shopping list',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.done),
-            tooltip: 'Okay',
-            onPressed: () {
-              moveToLastScreen();
-            },
+        appBar: AppBar(
+          title: Text(
+            'My shopping list',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
-      body: getShoppingListView()
-    );
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.done),
+              tooltip: 'Okay',
+              onPressed: () {
+                moveToLastScreen();
+              },
+            ),
+          ],
+        ),
+        body: getShoppingListView());
   }
 
   int getAmountOfCheckboxes() {
@@ -52,78 +51,78 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   }
 
   ListView getShoppingListView() {
-    TextStyle titleStyle = Theme.of(context).textTheme.title;
-    
+    TextStyle titleStyle = Theme.of(context).textTheme.titleMedium;
+
     return ListView.builder(
       itemCount: shoppingList[0].length,
       itemBuilder: (BuildContext context, int position) {
         numOfCheckboxes.add(false);
         return Card(
-          //color: Theme.of(context).selectedRowColor,
-          elevation: 4.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              // Checkbox
-              Checkbox(
-                value: numOfCheckboxes[position],
-                onChanged: (bool val) {
-                  boxStateChange(val, position);
-                },
-              ),
-              // Ingredient name
-              Text(
-                shoppingList[0].keys.elementAt(position),
-                style: titleStyle,
-              ),
-              Spacer(),
-              // Ingredient amount
-              Text(
-                getAndCorrectUnits(shoppingList[0], position),
-                style: titleStyle,
-              ),
-              // Ingredeint unit
-              Padding(
-                padding: EdgeInsets.only(right: 10.0, left: 5.0),
-                child: Text(
-                  shoppingList[1].values.elementAt(position),
+            //color: Theme.of(context).selectedRowColor,
+            elevation: 4.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                // Checkbox
+                Checkbox(
+                  value: numOfCheckboxes[position],
+                  onChanged: (bool val) {
+                    boxStateChange(val, position);
+                  },
+                ),
+                // Ingredient name
+                Text(
+                  shoppingList[0].keys.elementAt(position),
                   style: titleStyle,
                 ),
-              )              
-            ],
-          )
-          
-          // ListTile(
-          //   // Checkbox
-          //   leading: Checkbox(
-          //     value: numOfCheckboxes[position],
-          //     onChanged: (bool val) {
-          //       boxStateChange(val, position);
-          //     },
-          //   ),
-          //   // Ingredient name
-          //   title: Text(
-          //     shoppingList[0].keys.elementAt(position),
-          //     style: titleStyle,
-          //   ),
-          //   trailing: Container(
-          //     child: Column(
-          //       children: <Widget>[
-          //         // Ingredient amount
-          //         Text(
-          //           getAndCorrectUnits(shoppingList[0], position),
-          //           style: titleStyle,
-          //         ),
-          //         // Ingredeint unit
-          //         Text(
-          //           shoppingList[1].values.elementAt(position),
-          //           style: titleStyle,
-          //         ),
-          //       ],
-          //     ),
-          //   ),           
-          // ),
-        );
+                Spacer(),
+                // Ingredient amount
+                Text(
+                  getAndCorrectUnits(shoppingList[0], position),
+                  style: titleStyle,
+                ),
+                // Ingredeint unit
+                Padding(
+                  padding: EdgeInsets.only(right: 10.0, left: 5.0),
+                  child: Text(
+                    shoppingList[1].values.elementAt(position),
+                    style: titleStyle,
+                  ),
+                )
+              ],
+            )
+
+            // ListTile(
+            //   // Checkbox
+            //   leading: Checkbox(
+            //     value: numOfCheckboxes[position],
+            //     onChanged: (bool val) {
+            //       boxStateChange(val, position);
+            //     },
+            //   ),
+            //   // Ingredient name
+            //   title: Text(
+            //     shoppingList[0].keys.elementAt(position),
+            //     style: titleStyle,
+            //   ),
+            //   trailing: Container(
+            //     child: Column(
+            //       children: <Widget>[
+            //         // Ingredient amount
+            //         Text(
+            //           getAndCorrectUnits(shoppingList[0], position),
+            //           style: titleStyle,
+            //         ),
+            //         // Ingredeint unit
+            //         Text(
+            //           shoppingList[1].values.elementAt(position),
+            //           style: titleStyle,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            );
       },
     );
   }
@@ -132,7 +131,8 @@ class ShoppingListScreenState extends State<ShoppingListScreen> {
   String getAndCorrectUnits(Map<String, dynamic> list, int pos) {
     String originalString = list.values.elementAt(pos).toString();
     int strLen = originalString.length;
-    String correctedString = originalString.replaceRange(strLen-2, strLen, '');
+    String correctedString =
+        originalString.replaceRange(strLen - 2, strLen, '');
     return correctedString;
   }
 

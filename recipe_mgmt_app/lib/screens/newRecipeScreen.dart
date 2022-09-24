@@ -32,7 +32,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
   String appBarTitle;
   Recipe recipe;
   dynamic _image;
-  dynamic base64 = const Base64Codec() ;
+  dynamic base64 = const Base64Codec();
 
   // Used for text validation
   final _formKey = GlobalKey<FormState>();
@@ -46,7 +46,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
+    TextStyle titleText = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
       appBar: AppBar(
@@ -89,7 +89,8 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 decoration: InputDecoration(
                   labelText: "Recipe title",
                   labelStyle: titleText,
-                  contentPadding: EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
+                  contentPadding:
+                      EdgeInsets.only(left: 10, bottom: 10.0, top: 10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -102,10 +103,7 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
                 // Additional text
                 Padding(
                   padding: EdgeInsets.only(left: 15.0, right: 5.0),
-                  child: Text(
-                    'Recipe category:',
-                    style: titleText
-                  ),
+                  child: Text('Recipe category:', style: titleText),
                 ),
 
                 // Category drop down menu
@@ -134,15 +132,15 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
             ),
             Container(
               child: Container(
-                child: _image == null 
-                ? Text('Recipe image will be displayed here...')
-                : ClipRRect(
-                  borderRadius: new BorderRadius.circular(10.0),
-                  child: Image.file(_image),
-                ),
+                child: _image == null
+                    ? Text('Recipe image will be displayed here...')
+                    : ClipRRect(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        child: Image.file(_image),
+                      ),
                 padding: EdgeInsets.all(10.0),
               ),
-            ),       
+            ),
           ],
         ),
       ),
@@ -165,15 +163,11 @@ class NewRecipeScreenState extends State<NewRecipeScreen> {
       //maxWidth: 600,
       //maxHeight: 400,
     );
-    
-    
+
     setState(() {
       _image = image;
     });
-
   }
-
-
 
   // Update name of Cart object
   void updateName() {
