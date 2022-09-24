@@ -342,6 +342,6 @@ class CartScreenState extends State<CartScreen> {
       content: Text(message),
       duration: Duration(seconds: 2),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
