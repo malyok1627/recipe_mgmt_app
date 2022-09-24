@@ -338,7 +338,8 @@ class RecipeScreenState extends State<RecipeScreen> {
       content: Text(message),
       duration: Duration(seconds: 2),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
+    //Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   // Navigate to New Recipe

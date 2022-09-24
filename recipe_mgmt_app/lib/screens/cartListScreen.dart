@@ -148,7 +148,7 @@ class CartListScreenState extends State<CartListScreen> {
       content: Text(message),
       duration: Duration(seconds: 2),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   // Navigate to New Cart
