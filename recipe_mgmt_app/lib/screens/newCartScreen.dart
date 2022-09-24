@@ -30,7 +30,7 @@ class NewCartScreenState extends State<NewCartScreen> {
   @override
   Widget build(BuildContext context) {
     // Define text style
-    TextStyle titleText = Theme.of(context).textTheme.title;
+    TextStyle titleText = Theme.of(context).textTheme.titleMedium;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,36 +39,36 @@ class NewCartScreenState extends State<NewCartScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.save),
-              tooltip: 'Save New Cart',
-              onPressed: () {
-                setState(() {
-                  if (_formKey.currentState.validate()) {
-                    _save();
-                  }
-                });
-              },
-            ),
-          ],
+          IconButton(
+            icon: const Icon(Icons.save),
+            tooltip: 'Save New Cart',
+            onPressed: () {
+              setState(() {
+                if (_formKey.currentState.validate()) {
+                  _save();
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
-        child: 
-          // Cart title
-          Padding(
-            padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
-            child: TextFormField(
-              controller: nameController,
-              style: titleText,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return "Please enter cart title";
-                } else {
-                  updateName();
-                }
-              },
-              maxLength: 35,
+        child:
+            // Cart title
+            Padding(
+          padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 20.0),
+          child: TextFormField(
+            controller: nameController,
+            style: titleText,
+            validator: (value) {
+              if (value.isEmpty) {
+                return "Please enter cart title";
+              } else {
+                updateName();
+              }
+            },
+            maxLength: 35,
             decoration: InputDecoration(
               labelText: "Cart title",
               labelStyle: titleText,
@@ -108,14 +108,10 @@ class NewCartScreenState extends State<NewCartScreen> {
 
   // Show alert dialog
   void _showAlertDialog(String title, String message) {
-		AlertDialog alertDialog = AlertDialog(
-			title: Text(title),
-			content: Text(message),
-		);
-		showDialog(
-				context: context,
-				builder: (_) => alertDialog
-		);
-}
-
+    AlertDialog alertDialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(context: context, builder: (_) => alertDialog);
+  }
 }
