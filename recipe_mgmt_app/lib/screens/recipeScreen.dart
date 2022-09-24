@@ -104,7 +104,7 @@ class RecipeScreenState extends State<RecipeScreen> {
 
   // Get List of ingredients
   ListView getIngredientListView() {
-    TextStyle subheadStyle = Theme.of(context).textTheme.subhead;
+    TextStyle subheadStyle = Theme.of(context).textTheme.titleSmall;
     TextStyle titleStyle = Theme.of(context).textTheme.titleMedium;
 
     return ListView.builder(
