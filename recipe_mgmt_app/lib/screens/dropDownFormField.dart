@@ -6,22 +6,22 @@ class DropdownFormField<T> extends FormField<T> {
     InputDecoration decoration,
     T initialValue,
     List<DropdownMenuItem<T>> items,
-    bool autovalidate = false,
     FormFieldSetter<T> onSaved,
     FormFieldValidator<T> validator,
   }) : super(
           key: key,
           onSaved: onSaved,
           validator: validator,
-          autovalidate: autovalidate,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           initialValue: items.contains(initialValue) ? initialValue : null,
           builder: (FormFieldState<T> field) {
-            final InputDecoration effectiveDecoration = (decoration ?? const InputDecoration())
+            final InputDecoration effectiveDecoration = (decoration ??
+                    const InputDecoration())
                 .applyDefaults(Theme.of(field.context).inputDecorationTheme);
 
             return InputDecorator(
-              decoration:
-                  effectiveDecoration.copyWith(errorText: field.hasError ? field.errorText : null),
+              decoration: effectiveDecoration.copyWith(
+                  errorText: field.hasError ? field.errorText : null),
               isEmpty: field.value == '' || field.value == null,
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<T>(
